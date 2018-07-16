@@ -15,31 +15,27 @@ class ControllerExtensionPaymentTranzzo extends Controller
 
         $amount = $order_info['total'] * $order_info['currency_value'];
 
-        $params = array();
-        $params[TranzzoApi::P_REQ_SERVER_URL] = $this->url->link('extension/payment/tranzzo/callback', '', true);
-        $params[TranzzoApi::P_REQ_RESULT_URL] = $this->url->link('checkout/success', '', true);
-        $params[TranzzoApi::P_REQ_ORDER] = strval($order_id);
-        $params[TranzzoApi::P_REQ_AMOUNT] = TranzzoApi::amountToDouble($amount);
-        $params[TranzzoApi::P_REQ_CURRENCY] = $order_info['currency_code'];
-        $params[TranzzoApi::P_REQ_DESCRIPTION] = "Order #{$order_id}";
+        $this->tranzzoApi->setServerUrl($this->url->link('extension/payment/tranzzo/callback', '', true));
+        $this->tranzzoApi->setResultUrl($this->url->link('checkout/success', '', true));
+        $this->tranzzoApi->setOrderId($order_id);
+        $this->tranzzoApi->setAmount($amount);
+        $this->tranzzoApi->setCurrency($order_info['currency_code']);
+        $this->tranzzoApi->setDescription("Order #{$order_id}");
 
         if(!empty($order_info['customer_id']))
-            $params[TranzzoApi::P_REQ_CUSTOMER_ID] = strval($order_info['customer_id']);
+            $this->tranzzoApi->setCustomerId($order_info['customer_id']);
         else
-            $params[TranzzoApi::P_REQ_CUSTOMER_ID] = !empty($order_info['email'])? $order_info['email'] : 'unregistered';
+            $this->tranzzoApi->setCustomerId($order_info['email']);
 
-        $params[TranzzoApi::P_REQ_CUSTOMER_EMAIL] = !empty($order_info['email']) ? $order_info['email'] : 'unregistered';
+        $this->tranzzoApi->setCustomerEmail($order_info['email']);
 
-        if(!empty($order_info['firstname']))
-            $params[TranzzoApi::P_REQ_CUSTOMER_FNAME] = $order_info['firstname'];
+        $this->tranzzoApi->setCustomerFirstName($order_info['firstname']);
 
-        if(!empty($order_info['lastname']))
-            $params[TranzzoApi::P_REQ_CUSTOMER_LNAME] = $order_info['lastname'];
+        $this->tranzzoApi->setCustomerLastName($order_info['lastname']);
 
-        if(!empty($order_info['telephone']))
-            $params[TranzzoApi::P_REQ_CUSTOMER_PHONE] = $order_info['telephone'];
+        $this->tranzzoApi->setCustomerPhone($order_info['telephone']);
 
-        $params[TranzzoApi::P_REQ_PRODUCTS] = array();
+        $this->tranzzoApi->setProducts();
 
         $this->load->model('account/order');
         $products = $this->model_account_order->getOrderProducts($order_id);
@@ -56,14 +52,13 @@ class ControllerExtensionPaymentTranzzo extends Controller
 //                            'price_type' => 'gross', // net | gross
 //                            'vat' => 0, // НДС
                     'qty' => intval($product['quantity']),
-//                            'entity_id' => '',
                 );
             }
 
-            $params[TranzzoApi::P_REQ_PRODUCTS] = $items;
+            $this->tranzzoApi->setProducts($items);
         }
 
-        $response = $this->tranzzoApi->createPaymentHosted($params);
+        $response = $this->tranzzoApi->createPaymentHosted();
 
         $data['action'] = $this->url->link('checkout/checkout', '', true);
         $data['error'] = !empty($response['message'])? $response['message'] : '';
@@ -80,21 +75,19 @@ class ControllerExtensionPaymentTranzzo extends Controller
     {
         $this->load->library('tranzzoApi');
 
-//        TranzzoApi::writeLog(array('$_GET' => $_GET, '$_POST' => $_POST,), 'data check', 'notif');
-
         $data = $_POST['data'];
         $signature = $_POST['signature'];
         if(empty($data) && empty($signature)) die('LOL! Bad Request!!!');
 
-        $data_response = TranzzoApi::notificationDecode($data);
-        $order_id = (int)$data_response[TranzzoApi::P_REQ_ORDER];
+        $data_response = TranzzoApi::parseDataResponse($data);
+        $order_id = (int)$data_response[TranzzoApi::P_RES_PROV_ORDER];
         if($this->tranzzoApi->validateSignature($data, $signature) && $order_id) {
             $this->load->language('extension/payment/tranzzo');
             $this->load->model('checkout/order');
             $order_info = $this->model_checkout_order->getOrder($order_id);
-            $amount_payment = TranzzoApi::amountToDouble($data_response[TranzzoApi::P_REQ_AMOUNT]);
+            $amount_payment = TranzzoApi::amountToDouble($data_response[TranzzoApi::P_RES_AMOUNT]);
             $amount_order = TranzzoApi::amountToDouble($order_info['total'] * $order_info['currency_value']);
-            if ($data_response[TranzzoApi::P_RES_RESP_CODE] == 1000 && ($amount_payment == $amount_order)) {
+            if ($data_response[TranzzoApi::P_RES_RESP_CODE] == 1000 && ($amount_payment >= $amount_order)) {
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
                     $this->config->get('tranzzo_order_status_complete_id'),
