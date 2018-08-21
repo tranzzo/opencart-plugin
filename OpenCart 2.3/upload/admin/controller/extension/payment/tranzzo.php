@@ -69,6 +69,11 @@ class ControllerExtensionPaymentTranzzo extends Controller {
         } else {
             $data['error_order_status_failure_id'] = '';
         }
+        if (isset($this->error['order_status_listen'])) {
+            $data['error_order_status_listen'] = $this->error['order_status_listen'];
+        } else {
+            $data['error_order_status_listen'] = '';
+        }
 
         $data['breadcrumbs'] = array();
         $data['breadcrumbs'][] = array(
@@ -160,9 +165,15 @@ class ControllerExtensionPaymentTranzzo extends Controller {
         } else {
             $data['tranzzo_order_status_failure_id'] = $this->config->get('tranzzo_order_status_failure_id');
         }
+        if (isset($this->request->post['tranzzo_order_status_listen'])) {
+            $data['tranzzo_order_status_listen'] = $this->request->post['tranzzo_order_status_listen'];
+        } else {
+            $data['tranzzo_order_status_listen'] = $this->config->get('tranzzo_order_status_listen');
+        }
 
         return $data;
     }
+
 
     protected function validate()
     {
@@ -200,9 +211,17 @@ class ControllerExtensionPaymentTranzzo extends Controller {
 
     public function install()
     {
+        $this->load->model('extension/event');
+
+        $this->model_extension_event->addEvent('tranzzo',
+          'catalog/model/checkout/order/addOrderHistory/before',
+          'extension/payment/tranzzo/tranzzoRefund'
+        );
     }
 
     public function uninstall()
     {
+        $this->load->model('extension/event');
+        $this->model_extension_event->deleteEvent('tranzzo');
     }
 }

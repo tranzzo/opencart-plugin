@@ -29,7 +29,7 @@
                 <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $text_edit; ?></h3>
             </div>
             <div class="panel-body">
-                <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-oschadbank" class="form-horizontal">
+                <form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form-tranzzo" class="form-horizontal">
                     <div class="form-group required">
                         <label class="col-sm-2 control-label" for="input-pos_id"><?php echo $entry_pos_id; ?></label>
                         <div class="col-sm-10">
@@ -113,6 +113,27 @@
 
                                 <?php if ($error_order_status_failure_id) { ?>
                                 <div class="text-danger"><?php echo $error_order_status_failure_id; ?></div>
+                                <?php } ?>
+                                <?php if ($error_order_status) { ?>
+                                <div class="text-danger"><?php echo $error_order_status; ?></div>
+                                <?php } ?>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group required">
+                        <div class="form-group">
+                            <label class="col-sm-2 control-label"><?php echo $entry_order_status_listen; ?></label>
+                            <div class="col-sm-10">
+                                <?php foreach ($order_statuses as $order_status) { ?>
+                                <?php if (is_array($tranzzo_order_status_listen) && in_array($order_status['order_status_id'], $tranzzo_order_status_listen)) { ?>
+                                <label class="lb-order-listen"><input type="checkbox" name="tranzzo_order_status_listen[]" value="<?php echo $order_status['order_status_id']; ?>" checked="checked"><?php echo $order_status['name']; ?></label>
+                                <?php } else { ?>
+                                <label class="lb-order-listen"><input type="checkbox" name="tranzzo_order_status_listen[]" value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></label>
+                                <?php } ?>
+                                <?php } ?>
+
+                                <?php if ($error_order_status_listen) { ?>
+                                <div class="text-danger"><?php echo $error_order_status_listen; ?></div>
                                 <?php } ?>
                                 <?php if ($error_order_status) { ?>
                                 <div class="text-danger"><?php echo $error_order_status; ?></div>

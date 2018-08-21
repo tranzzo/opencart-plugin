@@ -20,11 +20,10 @@ final class TranzzoApi
     const P_REQ_PRODUCTS    = 'products';
     const P_REQ_ORDER_3DS_BYPASS   = 'order_3ds_bypass';
     const P_REQ_CC_NUMBER   = 'cc_number';
-    const P_REQ_PAYWAY      = 'payway';
-
     const P_OPT_PAYLOAD     = 'payload';
+    const P_REQ_PAYWAY     = 'payway';
 
-    const P_REQ_CUSTOMER_ID     = 'customer_id';
+    const P_REQ_CUSTOMER_ID = 'customer_id';
     const P_REQ_CUSTOMER_EMAIL  = 'customer_email';
     const P_REQ_CUSTOMER_FNAME  = 'customer_fname';
     const P_REQ_CUSTOMER_LNAME  = 'customer_lname';
@@ -42,12 +41,7 @@ final class TranzzoApi
     const P_RES_STATUS      = 'status';
     const P_RES_CODE        = 'code';
     const P_RES_RESP_CODE   = 'response_code';
-    const P_RES_RESP_DESC   = 'response_description';
-    const P_RES_ORDER       = 'order_id';
-    const P_RES_AMOUNT      = 'amount';
-    const P_RES_CURRENCY    = 'currency';
-
-
+    const P_RES_DESC        = 'code_description';
 
     const P_TRZ_ST_SUCCESS      = 'success';
     const P_TRZ_ST_PENDING      = 'pending';
@@ -62,6 +56,7 @@ final class TranzzoApi
     //URI method
     const U_METHOD_PAYMENT = '/payment';
     const U_METHOD_POS = '/pos';
+    const U_METHOD_REFUND = '/refund';
 
 
 
@@ -95,17 +90,17 @@ final class TranzzoApi
      */
     private $headers;
 
-    private $params = array();
-
-    public function __construct($registry)
+    public function __construct($registry=null)
     {
+        $this->registry = $registry;
+
         $this->posId = trim($this->config->get('tranzzo_pos_id'));
         $this->apiKey = trim($this->config->get('tranzzo_api_key'));
         $this->apiSecret = trim($this->config->get('tranzzo_api_secret'));
         $this->endpointsKey = trim($this->config->get('tranzzo_endpoints_key'));
 
-        if(empty($this->posId) || empty($this->apiKey) || empty($this->apiSecret) || empty($this->endpointKey)){
-            self::writeLog('Invalid constructor parameters', '', 'error');
+        if(empty($this->posId) || empty($this->apiKey) || empty($this->apiSecret) || empty($this->endpointsKey)){
+            self::writeLog('Invalid constructor parameters');
         }
     }
 
@@ -114,146 +109,57 @@ final class TranzzoApi
         return $this->registry->get($name);
     }
 
-    public function setServerUrl($value = '')
-    {
-        $this->params[self::P_REQ_SERVER_URL] = $value;
-    }
-
-    public function setResultUrl($value = '')
-    {
-        $this->params[self::P_REQ_RESULT_URL] = $value;
-    }
-
-    public function setOrderId($value = '')
-    {
-        $this->params[self::P_REQ_ORDER] = strval($value);
-    }
-
-    public function setAmount($value = 0, $round = null)
-    {
-        $this->params[self::P_REQ_AMOUNT] = self::amountToDouble($value, $round);
-    }
-
-    public function setCurrency($value = '')
-    {
-        $this->params[self::P_REQ_CURRENCY] = $value;
-    }
-
-    public function setDescription($value = '')
-    {
-        $this->params[self::P_REQ_DESCRIPTION] = !empty($value)? $value : 'Order payment';
-    }
-
-    public function setCustomerId($value = '')
-    {
-        $this->params[self::P_REQ_CUSTOMER_ID] = !empty($value)? strval($value) : 'unregistered';
-    }
-
-    public function setCustomerEmail($value = '')
-    {
-        $this->params[self::P_REQ_CUSTOMER_EMAIL] = !empty($value)? strval($value) : 'unregistered';
-    }
-
-    public function setCustomerFirstName($value = '')
-    {
-        if(!empty($value))
-            $this->params[self::P_REQ_CUSTOMER_FNAME] = $value;
-    }
-
-    public function setCustomerLastName($value = '')
-    {
-        if(!empty($value))
-            $this->params[self::P_REQ_CUSTOMER_LNAME] = $value;
-    }
-
-    public function setCustomerPhone($value = '')
-    {
-        if(!empty($value))
-            $this->params[self::P_REQ_CUSTOMER_PHONE] = $value;
-    }
-
-    public function setProducts($value = array())
-    {
-        $this->params[self::P_REQ_PRODUCTS] = is_array($value)? $value : array();
-    }
-
-    public function addProduct($value = array())
-    {
-        if(is_array($value) && !empty($value))
-            $this->params[self::P_REQ_PRODUCTS][] = $value;
-    }
-
     /**
-     * set custom value
-     * @param string $value
-     */
-    public function setPayLoad($value = '')
-    {
-        $this->params[self::P_OPT_PAYLOAD] = $value;
-    }
-
-    /**
-     * @return array
-     */
-    public function getReqParams()
-    {
-        return $this->params;
-    }
-
-    /**
+     * @param array $params
      * @return mixed
      */
-    public function createCreditPayment()
+    public function createCreditPayment($params = array())
     {
-        $this->params[self::P_REQ_METHOD] = 'credit';
-        $this->params[self::P_REQ_POS_ID] = $this->posId;
+        $params[self::P_REQ_METHOD] = 'credit';
+        $params[self::P_REQ_POS_ID] = $this->posId;
 
         $uri = self::U_METHOD_PAYMENT;
         $this->setHeader('Content-Type:application/json');
 
-        return $this->request(self::R_METHOD_POST, $uri);
+        return $this->request($params, self::R_METHOD_POST, $uri);
     }
 
     /**
+     * @param array $params
      * @return mixed
      */
-    public function createPaymentHosted()
+    public function createPaymentHosted($params = array())
     {
-        $this->params[self::P_REQ_POS_ID] = $this->posId;
-        $this->params[self::P_REQ_MODE] = self::P_MODE_HOSTED;
-        $this->params[self::P_REQ_METHOD] = 'purchase';
-        $this->params[self::P_REQ_ORDER_3DS_BYPASS] = 'supported';
+        $params[self::P_REQ_POS_ID] = $this->posId;
+        $params[self::P_REQ_MODE] = self::P_MODE_HOSTED;
+        $params[self::P_REQ_METHOD] = 'purchase';
+        $params[self::P_REQ_ORDER_3DS_BYPASS] = 'supported';
 
         $this->setHeader('Accept: application/json');
         $this->setHeader('Content-Type: application/json');
 
-        return $this->request(self::R_METHOD_POST, self::U_METHOD_PAYMENT);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function checkPaymentStatus()
-    {
-        $uri = self::U_METHOD_POS. '/' . $this->posId . '/orders/' . $this->params[self::P_REQ_ORDER];
-
-        return $this->request(self::R_METHOD_GET, $uri, []);
+        return $this->request($params, self::R_METHOD_POST, self::U_METHOD_PAYMENT);
     }
 
     /**
      * @param $params
      * @return mixed
      */
-    private function request($method, $uri, $params = null)
+    public function checkPaymentStatus($params)
+    {
+        $uri = self::U_METHOD_POS. '/' . $this->posId . '/orders/' . $params[self::P_REQ_ORDER];
+
+        return $this->request([], self::R_METHOD_GET, $uri);
+    }
+
+    /**
+     * @param $params
+     * @return mixed
+     */
+    private function request($params, $method, $uri)
     {
         $url    = $this->apiUrl . $uri;
-        $params = is_null($params)? $this->params : $params;
         $data   = json_encode($params);
-
-        if(json_last_error()) {
-            self::writeLog(json_last_error(), 'json_last_error', 'error');
-            self::writeLog(json_last_error_msg(), 'json_last_error_msg', 'error');
-        }
 
         $this->setHeader('X-API-Auth: CPAY '.$this->apiKey.':'.$this->apiSecret);
         $this->setHeader('X-API-KEY: ' . $this->endpointsKey);
@@ -272,23 +178,31 @@ final class TranzzoApi
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_HTTPHEADER, $this->headers);
 
-        $server_response = curl_exec($ch);
+        $server_output = curl_exec($ch);
         $http_code = curl_getinfo($ch);
         $errno = curl_errno($ch);
         curl_close($ch);
 
-        // for check request
-//        self::writeLog($url, '', '', 0);
-//        self::writeLog(array('headers' => $this->headers));
-//        self::writeLog(array('params' => $params));
-//
-//        self::writeLog(array("httpcode" => $http_code, "errno" => $errno));
-//        self::writeLog('response', $server_response);
+        // self::writeLog($url, '', '');
+        // self::writeLog(array('headers' => $this->headers));
+        // self::writeLog(array('params' => $params));
 
-        if(!$errno && empty($server_response))
+        // self::writeLog(array("httpcode" => $http_code, "errno" => $errno,));
+        // self::writeLog($server_output);
+
+        if(!$errno && empty($server_output))
             return $http_code;
         else
-            return ((json_decode($server_response, true))? json_decode($server_response, true) : $server_response);
+            return (json_decode($server_output, true))? json_decode($server_output, true) : $server_output;
+    }
+
+    /**
+     * @param $data
+     * @return mixed|null
+     */
+    public static function notificationDecode($data)
+    {
+        return json_decode(self::base64url_decode($data), true);
     }
 
     /**
@@ -302,12 +216,25 @@ final class TranzzoApi
         $sign = self::base64url_encode(sha1($signStr, true));
 
         if ($requestSign !== $sign) {
+            self::writeLog('signature wrong!');
             return false;
         }
 
         return true;
     }
+    /**
+     * @param $params
+     * @return mixed
+     */
+    public function createRefund($params = array())
+    {
+        $params[self::P_REQ_POS_ID] = $this->posId;
 
+        $this->setHeader('Accept: application/json');
+        $this->setHeader('Content-Type: application/json');
+
+        return $this->request($params, self::R_METHOD_POST, self::U_METHOD_REFUND);
+    }
     /**
      * @param $params
      * @return string
@@ -346,15 +273,6 @@ final class TranzzoApi
     }
 
     /**
-     * @param $data
-     * @return mixed
-     */
-    public static function parseDataResponse($data)
-    {
-        return json_decode(self::base64url_decode($data), true);
-    }
-
-    /**
      * @param $header
      */
     private function setHeader($header)
@@ -379,15 +297,9 @@ final class TranzzoApi
     static function amountToDouble($value = '', $round = null)
     {
         $val = floatval($value);
-        return is_null($round)? round($val, 2) : round($value, (int)$round);
+        return is_null($round)? $val : round($value, (int)$round);
     }
 
-    /**
-     * @param $data
-     * @param string $flag
-     * @param string $filename
-     * @param bool|true $append
-     */
     static function writeLog($data, $flag = '', $filename = '', $append = true)
     {
         $filename = !empty($filename)? strval($filename) : basename(__FILE__);

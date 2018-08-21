@@ -17,6 +17,7 @@ $_['entry_status']		 = 'Status';
 $_['entry_total']		 = 'Lower bound';
 $_['entry_order_status_complete']   = 'Order status after payment';
 $_['entry_order_status_failure']    = 'Order status in case of failure';
+$_['entry_order_status_listen']    = 'Order status for refund';
 $_['entry_geo_zone']	 = 'Geographical area';
 $_['entry_sort_order']	 = 'Sorting order';
 
