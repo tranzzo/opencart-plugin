@@ -1,5 +1,7 @@
 <?php
-class ControllerExtensionPaymentTranzzo extends Controller {
+
+class ControllerExtensionPaymentTranzzo extends Controller
+{
     private $error = array();
 
     public function index()
@@ -11,7 +13,6 @@ class ControllerExtensionPaymentTranzzo extends Controller {
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
             $this->load->model('setting/setting');
             $this->model_setting_setting->editSetting('tranzzo', $this->request->post);
-
 
             $this->session->data['success'] = $this->language->get('text_success');
 
@@ -53,13 +54,13 @@ class ControllerExtensionPaymentTranzzo extends Controller {
             $data['error_endpoints_key'] = '';
         }
 
-		if (isset($this->error['order_status'])) {
+        if (isset($this->error['order_status'])) {
             $data['error_order_status'] = $this->error['order_status'];
         } else {
             $data['error_order_status'] = '';
         }
 
-		if (isset($this->error['order_status_complete_id'])) {
+        if (isset($this->error['order_status_complete_id'])) {
             $data['error_order_status_complete_id'] = $this->error['order_status_complete_id'];
         } else {
             $data['error_order_status_complete_id'] = '';
@@ -74,6 +75,14 @@ class ControllerExtensionPaymentTranzzo extends Controller {
         } else {
             $data['error_order_status_listen'] = '';
         }
+
+        //new
+        if (isset($this->error['order_status_auth_id'])) {
+            $data['error_order_status_auth_id'] = $this->error['order_status_auth_id'];
+        } else {
+            $data['error_order_status_auth_id'] = '';
+        }
+        //new
 
         $data['breadcrumbs'] = array();
         $data['breadcrumbs'][] = array(
@@ -170,6 +179,18 @@ class ControllerExtensionPaymentTranzzo extends Controller {
         } else {
             $data['tranzzo_order_status_listen'] = $this->config->get('tranzzo_order_status_listen');
         }
+        //new
+        if (isset($this->request->post['tranzzo_type_payment'])) {
+            $data['tranzzo_type_payment'] = $this->request->post['tranzzo_type_payment'];
+        } else {
+            $data['tranzzo_type_payment'] = $this->config->get('tranzzo_type_payment');
+        }
+        if (isset($this->request->post['tranzzo_order_status_auth_id'])) {
+            $data['tranzzo_order_status_auth_id'] = $this->request->post['tranzzo_order_status_auth_id'];
+        } else {
+            $data['tranzzo_order_status_auth_id'] = $this->config->get('tranzzo_order_status_auth_id');
+        }
+        //new
 
         return $data;
     }
@@ -192,7 +213,6 @@ class ControllerExtensionPaymentTranzzo extends Controller {
         if (!$this->request->post['tranzzo_endpoints_key']) {
             $this->error['endpoints_key'] = $this->language->get('error_endpoints_key');
         }
-
         if (!$this->request->post['tranzzo_order_status_complete_id']) {
             $this->error['order_status_complete_id'] = $this->language->get('error_order_status_complete_id');
         }
@@ -200,9 +220,18 @@ class ControllerExtensionPaymentTranzzo extends Controller {
             $this->error['order_status_failure_id'] = $this->language->get('error_order_status_failure_id');
         }
 
+        //new
+        if ($this->request->post['tranzzo_type_payment'] && !$this->request->post['tranzzo_order_status_auth_id']) {
+            $this->error['order_status_auth_id'] = $this->language->get('error_order_status_auth_id');
+        }
+        //new
+
         $complete = (int)$this->request->post['tranzzo_order_status_complete_id'];
+        //new
+        $auth = (int)$this->request->post['tranzzo_order_status_auth_id'];
+        //new
         $fail = (int)$this->request->post['tranzzo_order_status_failure_id'];
-        if ($complete == $fail){
+        if ($complete == $fail || $complete == $auth || $auth == $fail) {
             $this->error['order_status'] = $this->language->get('error_order_status');
         }
 
@@ -214,14 +243,24 @@ class ControllerExtensionPaymentTranzzo extends Controller {
         $this->load->model('extension/event');
 
         $this->model_extension_event->addEvent('tranzzo',
-          'catalog/model/checkout/order/addOrderHistory/before',
-          'extension/payment/tranzzo/tranzzoRefund'
+            'catalog/model/checkout/order/addOrderHistory/before',
+            'extension/payment/tranzzo/tranzzoRefund'
         );
+
+        //new
+        $this->load->model('extension/payment/tranzzo');
+        $this->model_extension_payment_tranzzo->install();
+        //new
     }
 
     public function uninstall()
     {
         $this->load->model('extension/event');
         $this->model_extension_event->deleteEvent('tranzzo');
+
+        //new
+        $this->load->model('extension/payment/tranzzo');
+        $this->model_extension_payment_tranzzo->uninstall();
+        //new
     }
 }

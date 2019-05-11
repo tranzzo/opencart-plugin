@@ -57,6 +57,9 @@ final class TranzzoApi
     const U_METHOD_PAYMENT = '/payment';
     const U_METHOD_POS = '/pos';
     const U_METHOD_REFUND = '/refund';
+    //new
+    const U_METHOD_VOID = '/void';
+    const U_METHOD_CAPTURE = '/capture';
 
 
 
@@ -85,6 +88,10 @@ final class TranzzoApi
      */
     private $endpointsKey;
 
+    //new
+    private $type_payment;
+    //new
+
     /**
      * @var array $headers
      */
@@ -98,6 +105,10 @@ final class TranzzoApi
         $this->apiKey = trim($this->config->get('tranzzo_api_key'));
         $this->apiSecret = trim($this->config->get('tranzzo_api_secret'));
         $this->endpointsKey = trim($this->config->get('tranzzo_endpoints_key'));
+
+        //new
+        $this->type_payment = ($this->config->get('tranzzo_type_payment') == '1') ? 1 : 0;
+        //new
 
         if(empty($this->posId) || empty($this->apiKey) || empty($this->apiSecret) || empty($this->endpointsKey)){
             self::writeLog('Invalid constructor parameters');
@@ -132,11 +143,14 @@ final class TranzzoApi
     {
         $params[self::P_REQ_POS_ID] = $this->posId;
         $params[self::P_REQ_MODE] = self::P_MODE_HOSTED;
-        $params[self::P_REQ_METHOD] = 'purchase';
+//        $params[self::P_REQ_METHOD] = 'purchase';
+        $params[self::P_REQ_METHOD] = empty($this->type_payment) ? 'purchase' : 'auth';
         $params[self::P_REQ_ORDER_3DS_BYPASS] = 'supported';
 
         $this->setHeader('Accept: application/json');
         $this->setHeader('Content-Type: application/json');
+
+        //self::writeLog(array('createPaymentHosted $params'=>(array)$params));
 
         return $this->request($params, self::R_METHOD_POST, self::U_METHOD_PAYMENT);
     }
@@ -158,9 +172,14 @@ final class TranzzoApi
      */
     private function request($params, $method, $uri)
     {
+        //new
+        //serialize_precision for json_encode
+        if (version_compare(phpversion(), '7.1', '>=')) {
+            ini_set('serialize_precision', -1);
+        }
+        //new
         $url    = $this->apiUrl . $uri;
         $data   = json_encode($params);
-
         $this->setHeader('X-API-Auth: CPAY '.$this->apiKey.':'.$this->apiSecret);
         $this->setHeader('X-API-KEY: ' . $this->endpointsKey);
 
@@ -182,14 +201,7 @@ final class TranzzoApi
         $http_code = curl_getinfo($ch);
         $errno = curl_errno($ch);
         curl_close($ch);
-
-        // self::writeLog($url, '', '');
-        // self::writeLog(array('headers' => $this->headers));
-        // self::writeLog(array('params' => $params));
-
-        // self::writeLog(array("httpcode" => $http_code, "errno" => $errno,));
-        // self::writeLog($server_output);
-
+        
         if(!$errno && empty($server_output))
             return $http_code;
         else
@@ -235,6 +247,37 @@ final class TranzzoApi
 
         return $this->request($params, self::R_METHOD_POST, self::U_METHOD_REFUND);
     }
+
+    //new
+    public function createVoid($params = array())
+    {
+        $params[self::P_REQ_POS_ID] = $this->posId;
+
+        $this->setHeader('Accept: application/json');
+        $this->setHeader('Content-Type: application/json');
+
+        return $this->request($params, self::R_METHOD_POST, self::U_METHOD_VOID);
+    }
+
+    public function createCapture($params = array())
+    {
+        self::writeLog('createCapture');
+        $params[self::P_REQ_POS_ID] = $this->posId;
+
+        $this->setHeader('Accept: application/json');
+        $this->setHeader('Content-Type: application/json');
+
+        return $this->request($params, self::R_METHOD_POST, self::U_METHOD_CAPTURE);
+    }
+    //new
+
+    //
+    public function getTypeMethod(){
+        return $this->type_payment;
+    }
+    //
+
+
     /**
      * @param $params
      * @return string
@@ -303,7 +346,7 @@ final class TranzzoApi
     static function writeLog($data, $flag = '', $filename = '', $append = true)
     {
         $filename = !empty($filename)? strval($filename) : basename(__FILE__);
-        file_put_contents(__DIR__ . "/{$filename}.log", "\n\n" . date('H:i:s') . " - $flag \n" .
+        file_put_contents(__DIR__ . "/{$filename}----.log", "\n\n" . date('H:i:s') . " - $flag \n" .
             (is_array($data)? json_encode($data, JSON_PRETTY_PRINT):$data)
             , ($append? FILE_APPEND : 0)
         );

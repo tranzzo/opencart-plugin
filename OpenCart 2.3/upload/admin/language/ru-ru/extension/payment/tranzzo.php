@@ -21,6 +21,10 @@ $_['entry_order_status_failure']    = 'Статус заказа в случае
 $_['entry_order_status_listen']    = 'Статус заказа для возврата средств';
 $_['entry_geo_zone']	 = 'Географическая зона';
 $_['entry_sort_order']	 = 'Порядок сортировки';
+//new
+$_['entry_type_payment']	 = 'Блокировка платежа';
+$_['entry_order_status_auth']   = 'Статус заказа с заблокированной оплатой';
+//new
 
 // Error
 $_['error_permission']	 = 'У Вас нет прав для управления данным модулем!';

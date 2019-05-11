@@ -1,6 +1,9 @@
 <?php
-class ModelExtensionPaymentTranzzo extends Model {
-    public function getMethod($address, $total) {
+
+class ModelExtensionPaymentTranzzo extends Model
+{
+    public function getMethod($address, $total)
+    {
 
         if (!in_array($this->session->data['currency'], array('USD', 'EUR', 'UAH', 'RUB'))) {
             return false;
@@ -23,13 +26,46 @@ class ModelExtensionPaymentTranzzo extends Model {
         if ($status) {
             $this->load->language('extension/payment/tranzzo');
             $method_data = array(
-                'code'       => 'tranzzo',
-                'title'      => $this->language->get('text_title'),
-                'terms'      => '',
+                'code' => 'tranzzo',
+                'title' => $this->language->get('text_title'),
+                'terms' => '',
                 'sort_order' => $this->config->get('tranzzo_sort_order')
             );
         }
 
         return $method_data;
     }
+
+    //new
+    public function addPaymentData($order_id, $data)
+    {
+        $this->db->query("UPDATE " . DB_PREFIX . "order SET tracking = '" . $this->db->escape($data['order_id']) . "', tranzzo_payment = '" . $this->db->escape(json_encode($data)) . "' WHERE order_id = '" . (int)$order_id . "'");
+    }
+
+    public function getOrderId($tranzo_id)
+    {
+        $sql = "SELECT order_id FROM " . DB_PREFIX . "order WHERE tracking = '" . (int)$tranzo_id . "'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getStatusName($id, $lang)
+    {
+        $sql = "SELECT name FROM " . DB_PREFIX . "order_status WHERE order_status_id = '" . (int)$id . "' AND language_id = '" . (int)$lang . "'";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    public function getPaymentData($order_id)
+    {
+        $sql = "SELECT tranzzo_payment FROM " . DB_PREFIX . "order WHERE order_id = '" . (int)$order_id . "'";
+        $query = $this->db->query($sql);
+
+        $this->load->library('tranzzoApi');
+        $this->tranzzoApi->writeLog(array('getPaymentData $sql', $sql));
+        $this->tranzzoApi->writeLog(array('getPaymentData', $query));
+
+        return $query->row['tranzzo_payment'];
+    }
+    //new
 }

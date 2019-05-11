@@ -66,6 +66,19 @@
                             <?php } ?>
                         </div>
                     </div>
+                    <!--new-->
+                    <div class="form-group">
+                        <!--<div class="form-group">-->
+                            <label class="col-sm-2 control-label"><?php echo $entry_type_payment; ?></label>
+                            <div class="col-sm-10">
+                                <label class="lb-order-listen">
+                                    <input type="radio" name="tranzzo_type_payment" value="1" id="on" <?php echo !empty($tranzzo_type_payment) ? 'checked' : ''?>><label for="on">On</label>
+                                    <input type="radio" name="tranzzo_type_payment" value="0" id="off"  <?php echo empty($tranzzo_type_payment) ? 'checked' : ''?>><label for="off">Off</label>
+                                </label>
+                            </div>
+                        <!--</div>-->
+                    </div>
+                    <!--new-->
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="input-total"><span data-toggle="tooltip" title="<?php echo $help_total; ?>"><?php echo $entry_total; ?></span></label>
                         <div class="col-sm-10">
@@ -73,7 +86,7 @@
                         </div>
                     </div>
                     <div class="form-group required">
-                        <div class="form-group">
+                        <!--<div class="form-group">-->
                             <label class="col-sm-2 control-label" for="input-order-status-complete"><?php echo $entry_order_status_complete; ?></label>
                             <div class="col-sm-10">
                                 <select name="tranzzo_order_status_complete_id" id="input-order-status-complete" class="form-control">
@@ -94,10 +107,36 @@
                                 <div class="text-danger"><?php echo $error_order_status; ?></div>
                                 <?php } ?>
                             </div>
-                        </div>
+                        <!--</div>-->
                     </div>
+                    <!--new-->
+                    <div class="form-group">
+                        <!--<div class="form-group">-->
+                        <label class="col-sm-2 control-label" for="input-order-status-auth"><?php echo $entry_order_status_auth; ?></label>
+                        <div class="col-sm-10">
+                            <select name="tranzzo_order_status_auth_id" id="input-order-status-auth" class="form-control">
+                                <option value="">---</option>
+                                <?php foreach ($order_statuses as $order_status) { ?>
+                                <?php if ($order_status['order_status_id'] == $tranzzo_order_status_auth_id) { ?>
+                                <option value="<?php echo $order_status['order_status_id']; ?>" selected="selected"><?php echo $order_status['name']; ?></option>
+                                <?php } else { ?>
+                                <option value="<?php echo $order_status['order_status_id']; ?>"><?php echo $order_status['name']; ?></option>
+                                <?php } ?>
+                                <?php } ?>
+                            </select>
+
+                            <?php if ($error_order_status_auth_id) { ?>
+                            <div class="text-danger"><?php echo $error_order_status_auth_id; ?></div>
+                            <?php } ?>
+                            <?php if ($error_order_status) { ?>
+                            <div class="text-danger"><?php echo $error_order_status; ?></div>
+                            <?php } ?>
+                        </div>
+                        <!--</div>-->
+                    </div>
+                    <!--new-->
                     <div class="form-group required">
-                        <div class="form-group">
+                        <!--<div class="form-group">-->
                             <label class="col-sm-2 control-label" for="input-order-status-failure"><?php echo $entry_order_status_failure; ?></label>
                             <div class="col-sm-10">
                                 <select name="tranzzo_order_status_failure_id" id="input-order-status-failure" class="form-control">
@@ -118,10 +157,10 @@
                                 <div class="text-danger"><?php echo $error_order_status; ?></div>
                                 <?php } ?>
                             </div>
-                        </div>
+                        <!--</div>-->
                     </div>
                     <div class="form-group required">
-                        <div class="form-group">
+                        <!--<div class="form-group">-->
                             <label class="col-sm-2 control-label"><?php echo $entry_order_status_listen; ?></label>
                             <div class="col-sm-10">
                                 <?php foreach ($order_statuses as $order_status) { ?>
@@ -139,7 +178,7 @@
                                 <div class="text-danger"><?php echo $error_order_status; ?></div>
                                 <?php } ?>
                             </div>
-                        </div>
+                        <!--</div>-->
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 control-label" for="input-sort-order"><?php echo $entry_sort_order; ?></label>

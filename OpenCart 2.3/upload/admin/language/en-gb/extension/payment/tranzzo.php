@@ -20,6 +20,10 @@ $_['entry_order_status_failure']    = 'Order status in case of failure';
 $_['entry_order_status_listen']    = 'Order status for refund';
 $_['entry_geo_zone']	 = 'Geographical area';
 $_['entry_sort_order']	 = 'Sorting order';
+//new
+$_['error_type_payment'] = 'type_payment';
+$_['entry_order_status_auth']   = 'Order status after auth payment';
+//new
 
 // Error
 $_['error_permission']	 = 'You are not authorized to manage this module!';
@@ -31,6 +35,9 @@ $_['error_order_status'] = 'Selected statuses can not be the same';
 $_['error_order_status_complete_id'] = 'You must select a status';
 $_['error_order_status_failure_id'] = 'You must select a status';
 $_['error_order_status_listen'] = 'You must select a status';
+//new
+$_['error_order_status_auth_id'] = 'You must select a status';
+//new
 
 // Help
 $_['help_total']         = 'The minimum order amount. Below this amount, the payment method will not be available.';
