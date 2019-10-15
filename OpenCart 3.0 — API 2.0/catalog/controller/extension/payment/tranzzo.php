@@ -44,6 +44,7 @@ class ControllerExtensionPaymentTranzzo extends Controller
 
         $this->load->model('account/order');
         $products = $this->model_account_order->getOrderProducts($order_id);
+
         if (count($products) > 0) {
             $items = array();
             $this->load->model('catalog/product');
@@ -68,28 +69,14 @@ class ControllerExtensionPaymentTranzzo extends Controller
 
         $data['action'] = $this->url->link('checkout/checkout', '', true);
         $data['error'] = !empty($response['message']) ? $response['message'] : '';
-        //$data['error'] .= (!empty($response['args']) && is_array($response['args'])) ? ', args: ' . implode(', ', $response['args']) : '';
-
-
-
-
-
-
-        $this->tranzzoApi->writeLog('$response', $response);
-        $data['error'] .= (!empty($response['args']['obj'][0]['msg']) && is_array($response['args']['obj'][0]['msg'])) ? ', mes: ' . implode(', ', $response['args']['obj'][0]['msg']) : '';
-
-
-
-
-
-
-
+        $data['error'] .= (!empty($response['args']) && is_array($response['args'])) ? ', args: ' . implode(', ', $response['args']) : '';
 
         if (!empty($response['redirect_url'])) {
             $data['redirect_url'] = $response['redirect_url'];
         }
 
         $this->cart->clear();
+
         return $this->load->view('extension/payment/tranzzo', $data);
     }
 
@@ -146,12 +133,14 @@ class ControllerExtensionPaymentTranzzo extends Controller
                 // new
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
-                    $this->config->get('tranzzo_order_status_complete_id'),
+                    $this->config->get('payment_tranzzo_order_status_complete_id'),
 //                    "{$this->language->get('text_pay_success')}\n
                     sprintf($this->language->get('text_pay_success'), $amount_order) . "\n
                        {$this->language->get('text_payment_id')}: {$data_response[TranzzoApi::P_RES_PAYMENT_ID]}\n
-                       {$this->language->get('text_order')}: {$data_response[TranzzoApi::P_REQ_BILL_ORDER]}"
+                       {$this->language->get('text_order')}: {$data_response[TranzzoApi::P_REQ_BILL_ORDER]}",
+                    true
                 );
+
             } // new
             elseif ($data_response[TranzzoApi::P_RES_RESP_CODE] == 1002) {
                 $payment_data = [
@@ -162,17 +151,19 @@ class ControllerExtensionPaymentTranzzo extends Controller
                 ];
                 $this->model_extension_payment_tranzzo->addPaymentData($order_id, $payment_data);
 
-                $status_name = $this->model_extension_payment_tranzzo->getStatusName($this->config->get('tranzzo_order_status_complete_id'), $this->config->get('config_language_id'));
+                $status_name = $this->model_extension_payment_tranzzo->getStatusName($this->config->get('payment_tranzzo_order_status_complete_id'), $this->config->get('config_language_id'));
 
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
-                    $this->config->get('tranzzo_order_status_auth_id'),
+                    $this->config->get('payment_tranzzo_order_status_auth_id'),
                     "{$this->language->get('text_pay_auth')}'" . $status_name->row['name'] . "'\n
                        {$this->language->get('text_payment_id')}: {$data_response[TranzzoApi::P_RES_PAYMENT_ID]}\n
-                       {$this->language->get('text_order')}: {$data_response[TranzzoApi::P_REQ_BILL_ORDER]}"
+                       {$this->language->get('text_order')}: {$data_response[TranzzoApi::P_REQ_BILL_ORDER]}",
+                    true
                 );
             } // new
             elseif ($data_response['method'] == 'refund' && $data_response['status'] == 'success') {
+                $this->tranzzoApi->writeLog(array('5', 1));
 
                 //new
                 $payment_data = [
@@ -187,16 +178,17 @@ class ControllerExtensionPaymentTranzzo extends Controller
 
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
-                    '8',
+                    '13',//Полный возврат!! если выбран один статус для возвоата идет отправка эмейла. если более нет
                     "{$this->language->get('text_pay_refund')}\n
                        {$this->language->get('text_payment_id')}: {$data_response[TranzzoApi::P_RES_PAYMENT_ID]}\n
-                       {$this->language->get('text_order')}: {$data_response[TranzzoApi::P_REQ_ORDER]}"
-
+                       {$this->language->get('text_order')}: {$data_response[TranzzoApi::P_REQ_ORDER]}",
+                    true
                 );
             } //new
             elseif ($data_response['method'] == 'void' && $data_response['status'] == 'success') {
+                $this->tranzzoApi->writeLog(array('4', 1));
 
-                //$this->tranzzoApi->writeLog('method void', '');
+                $this->tranzzoApi->writeLog('method void', '');
 
                 $payment_data = [
                     'method' => 'void',
@@ -204,7 +196,7 @@ class ControllerExtensionPaymentTranzzo extends Controller
                     'refund_amount' => TranzzoApi::amountToDouble($data_response['amount'])
                 ];
 
-                //$this->tranzzoApi->writeLog(array('$refund_data', $payment_data));
+                $this->tranzzoApi->writeLog(array('$void_data', $payment_data));
 
                 $this->load->model('extension/payment/tranzzo');
                 $this->model_extension_payment_tranzzo->addPaymentData($order_id, $payment_data);
@@ -214,7 +206,8 @@ class ControllerExtensionPaymentTranzzo extends Controller
                     7, // Отменено !!!!!!!!!!!!!!!!! получить статус возврта
                     "{$this->language->get('text_pay_void')}\n
                        {$this->language->get('text_payment_id')}: {$data_response[TranzzoApi::P_RES_PAYMENT_ID]}\n
-                       {$this->language->get('text_order')}: {$data_response[TranzzoApi::P_REQ_ORDER]}"
+                       {$this->language->get('text_order')}: {$data_response[TranzzoApi::P_REQ_ORDER]}",
+                    true
                 );
             }
             elseif ($data_response['method'] == 'capture' && $data_response['status'] == 'success') {
@@ -231,25 +224,29 @@ class ControllerExtensionPaymentTranzzo extends Controller
                     'amount_order' => TranzzoApi::amountToDouble($payment_data_old['amount_order'])
                 ];
 
-                $this->tranzzoApi->writeLog(array('$refund_data', $payment_data));
+                $this->tranzzoApi->writeLog(array('$capture_data', $payment_data));
 
                 $this->load->model('extension/payment/tranzzo');
                 $this->model_extension_payment_tranzzo->addPaymentData($order_id, $payment_data);
 
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
-                    $this->config->get('tranzzo_order_status_complete_id'),
+                    $this->config->get('payment_tranzzo_order_status_complete_id'),
                     sprintf($this->language->get('text_pay_success'), $amount_order) . "\n
                        {$this->language->get('text_payment_id')}: {$data_response[TranzzoApi::P_RES_PAYMENT_ID]}\n
-                       {$this->language->get('text_order')}: {$data_response[TranzzoApi::P_REQ_ORDER]}"
+                       {$this->language->get('text_order')}: {$data_response[TranzzoApi::P_REQ_ORDER]}",
+                    true
                 );
             }//new
+            elseif($data_response['status'] == 'pending'){
+
+            }
             else {
                 $msg = !empty($data_response['response_code']) ? "Response code: {$data_response['response_code']} " : "";
                 $msg .= !empty($data_response['response_description']) ? "Description: {$data_response['response_description']}" : "";
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
-                    $this->config->get('tranzzo_order_status_failure_id'),
+                    $this->config->get('payment_tranzzo_order_status_failure_id'),
                     $msg
                 );
             }
@@ -275,7 +272,7 @@ class ControllerExtensionPaymentTranzzo extends Controller
         $this->load->model('checkout/order');
         $order_info = $this->model_checkout_order->getOrder($order_id);
 
-        $order_status_listen = $this->config->get('tranzzo_order_status_listen');
+        $order_status_listen = $this->config->get('payment_tranzzo_order_status_listen');
 
         if (!empty($order_info) && $order_info['payment_code']) {
 
@@ -287,7 +284,7 @@ class ControllerExtensionPaymentTranzzo extends Controller
 
             if (!empty($payment_data)) {
                 //new capture
-                $order_status_for_capture = $this->config->get('tranzzo_order_status_complete_id');
+                $order_status_for_capture = $this->config->get('payment_tranzzo_order_status_complete_id');
 
                 if ($order_status == $order_status_for_capture && !empty($payment_data['order_id']) && $payment_data['method'] == 'auth') {
                     $tranzzoOrderId = $payment_data['order_id'];
@@ -321,7 +318,6 @@ class ControllerExtensionPaymentTranzzo extends Controller
                         if (!empty($response['message'])) {
                             throw new \Exception('Захват не удался! ' . $response['message']);
                             return false;
-
                         }
                     }
                 } // refund
@@ -356,7 +352,9 @@ class ControllerExtensionPaymentTranzzo extends Controller
                                 throw new \Exception('Возврат не удался! Сумма заказа превышает сумму платежа');
                                 return false;
                             }
+                            $this->tranzzoApi->writeLog(array('1', 1));
                             $response = $this->tranzzoApi->createRefund($data);
+                            $this->tranzzoApi->writeLog(array('2', 1));
                         }
 
 //                        $this->tranzzoApi->writeLog(array('$response return', $response));
@@ -370,6 +368,7 @@ class ControllerExtensionPaymentTranzzo extends Controller
 
                             if (empty($args[2])) $args[2] = '';
                             $args[2] .= $refund_message;
+                            $this->tranzzoApi->writeLog(array('3', 1));
                         }
                     } else {
                         $refund_message = sprintf('Refunds Tranzzo impossible, not enough data.');
