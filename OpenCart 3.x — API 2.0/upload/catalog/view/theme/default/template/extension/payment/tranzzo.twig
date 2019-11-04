@@ -1,0 +1,17 @@
+<form class="form-horizontal"  method="post" action="{{ action }}">
+    {% if redirect_url %}
+    <div class="buttons">
+        <div class="pull-right">
+            <a class="btn btn-primary" href="{{ redirect_url }}">{{ button_confirm }}</a>
+        </div>
+    </div>
+    {% else %}
+    <div class="buttons">
+        <div class="pull-right">
+            <input type="submit" value="{{ button_confirm }}" id="button-confirm" class="btn btn-primary" />
+        </div>
+    </div>
+    {% endif %}
+</form>
+<p class="text-danger">{{ error }}</p>
+
