@@ -36,14 +36,16 @@ final class TranzzoApi
     const P_REQ_SANDBOX     = 'sandbox';
 
     //Response params
-    const P_RES_PROV_ORDER  = 'provider_order_id';
+//    const P_RES_PROV_ORDER  = 'provider_order_id';
+    const P_RES_PROV_ORDER  = 'order_id';
     const P_RES_PAYMENT_ID  = 'payment_id';
     const P_RES_TRSACT_ID   = 'transaction_id';
     const P_RES_STATUS      = 'status';
     const P_RES_CODE        = 'code';
 //    const P_RES_RESP_CODE   = 'response_code';
     const P_RES_RESP_CODE   = 'status_code';
-    const P_RES_DESC        = 'code_description';
+//    const P_RES_DESC        = 'code_description';
+    const P_RES_DESC        = 'status_description';
 
     const P_TRZ_ST_SUCCESS      = 'success';
     const P_TRZ_ST_PENDING      = 'pending';
