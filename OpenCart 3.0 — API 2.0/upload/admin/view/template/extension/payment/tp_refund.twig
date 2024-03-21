@@ -1,0 +1,98 @@
+<style>
+
+</style>
+
+<div class="table-responsive card-body">
+    <table class="table tp-subtable">
+        {% if is_refunded %}
+            <tr>
+                <th>Amount Refunded</th>
+                <td class="value">{{ amount_refunded }}</td>
+            </tr>
+        {% else %}
+            <tr>
+                <th>Payment Id</th>
+                <td class="value">{{ payment_id }}</td>
+            </tr>
+            <tr>
+                <th>Payment Status</th>
+                <td class="value">{{ status }}</td>
+            </tr>
+            <tr>
+                <th>Amount Paid</th>
+                <td class="value">{{ amount }}</td>
+            </tr>
+            <tr>
+                <td colspan="2" class="value">
+                    <strong>
+                        <span id="refund_span_{{ payment_id }}">
+                        <a class="btn btn-primary"
+                           href="javascript:void(0);"
+                           onclick="$('#refund_span_{{ payment_id }}').hide();$('#refund_form_{{ payment_id }}').show();">
+                            Refund
+                        </a>
+                        </span>
+                        <form id="refund_form_{{ payment_id }}" method="post"
+                              action="#"
+                              class="form-horizontal" style="display:none" onsubmit="return false">
+                            <div class="">
+                                    <label for="tp_amount" class="form-control-label label-on-top col-12">
+                                        Enter the amount<span class="text-danger">*</span>
+                                    </label>
+                                 <div class="col-sm">
+                                    <div class="input-group">
+                                        <input type="text" id="tp_amount" required="required" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                            <br/>
+                            <div class="text-left">
+                                <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    onclick="$('#refund_span_{{ payment_id }}').show();$('#refund_form_{{ payment_id }}').hide();">
+                                    Cancel
+                                </button>
+
+                                <input type="hidden" id="payment_id" value="{{ payment_id }}" />
+                                <button type="submit" name="tp_refund" id="tp_refund" class="btn btn-primary">Refund Payment</button>
+                            </div>
+                        </form>
+                    </strong>
+                </td>
+            </tr>
+        {% endif %}
+    </table>
+</div>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('#tp_refund').click(function(e){
+        var tp_amount = $('#tp_amount').val();
+        var payment_id = $('#payment_id').val();
+
+        $.ajax({
+		url: 'index.php?route=extension/payment/tp/refund&user_token={{ user_token }}',
+        type: 'post',
+        data: 'order_id={{ order_id }}&payment_id='+payment_id+'&tp_amount='+tp_amount,
+		dataType: 'json',
+		beforeSend: function() {
+            $('#tp_refund').button('loading');
+		},
+		complete: function() {
+            $('#tp_refund').button('reset');
+		},
+		success: function(json) {
+            if (json.status == 1) {
+                alert(json.message);
+                location.href=location.href;
+            } else {
+                alert(json.message)
+            }
+		},
+		error: function(xhr, ajaxOptions, thrownError) {
+            alert(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
+		}
+	});
+    });
+});
+</script>

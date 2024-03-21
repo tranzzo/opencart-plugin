@@ -1,0 +1,20 @@
+<div class="table-responsive">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <td>Type</td>
+                <td>Amount</td>
+                <td>Date</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for transaction in transactions %}
+            <tr>
+                <td>{{ transaction.type }}</td>
+                <td>{{ currency_code }}{{ transaction.amount|number_format(2, '.', ',') }}</td>
+                <td>{{ transaction.date }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>

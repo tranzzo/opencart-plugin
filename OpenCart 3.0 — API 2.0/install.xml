@@ -1,0 +1,42 @@
+<modification>
+    <name>Payment Module</name>
+    <version>2.0</version>
+    <author>Your Name</author>
+    <link>Your Website</link>
+    <code>tp_payment</code>
+
+    <!-- Copying files -->
+    <file path="admin/controller/extension/payment/tp.php" />
+    <file path="admin/language/en-gb/extension/payment/tp.php" />
+    <file path="admin/language/ru-ru/extension/payment/tp.php" />
+    <file path="admin/model/extension/payment/tp.php" />
+    <file path="catalog/controller/extension/payment/tp.php" />
+    <file path="catalog/language/en-gb/extension/payment/tp.php" />
+    <file path="catalog/language/ru-ru/extension/payment/tp.php" />
+    <file path="catalog/model/extension/payment/tp.php" />
+    <file path="system/library/ServiceApi.php" />
+    <file path="admin/view/image/payment/tp.png" />
+    <file path="catalog/view/theme/default/template/extension/payment/tp.twig" />
+    <file path="admin/view/template/extension/payment/tp_refund.twig" />
+    <file path="admin/view/template/extension/payment/tp_transactions.twig" />
+    <file path="admin/view/template/extension/payment/tp.twig" />
+
+    <!-- Add SQL queries if needed -->
+    <!-- <file path="install.sql" execution="install" /> -->
+
+    <!-- Add language entries if needed -->
+    <file path="admin/language/en-gb/extension/payment/tp.php" />
+    <file path="admin/language/ru-ru/extension/payment/tp.php" />
+    <file path="admin/language/uk-ua/extension/payment/tp.php" />
+    <file path="catalog/language/en-gb/extension/payment/tp.php" />
+    <file path="catalog/language/ru-ru/extension/payment/tp.php" />
+    <file path="catalog/language/uk-ua/extension/payment/tp.php" />
+
+    <!-- Add dependency if needed -->
+    <!-- <dependency opencart="3.0" /> -->
+
+    <!-- Add library files if needed -->
+    <!-- <library path="system/library/required_library.php" /> -->
+
+    <!-- Additional modifications if needed -->
+</modification>

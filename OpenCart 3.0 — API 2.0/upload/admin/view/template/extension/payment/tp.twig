@@ -1,0 +1,144 @@
+{{ header }}{{ column_left }}
+<div id="content" xmlns="http://www.w3.org/1999/html">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="pull-right">
+                <button type="submit"
+                        form="form-pp-pro-uk"
+                        data-toggle="tooltip"
+                        title="{{ button_save }}"
+                        class="btn btn-primary">
+                    <i class="fa fa-save"></i>
+                </button>
+                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default">
+                    <i class="fa fa-reply"></i>
+                </a>
+            </div>
+            <h1>{{ heading_title }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %}
+                <li><a href="{{ breadcrumb['href'] }}">{{ breadcrumb['text'] }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        {% if (error_warning) %}
+        <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {% endif %}
+        {% if (success) %}
+        <div class="alert alert-success"><i class="fa fa-exclamation-circle"></i> {{ success }}
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+        </div>
+        {% endif %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }}</h3>
+            </div>
+            <div class="panel-body">
+                <form action="{{ action }}"
+                      method="post"
+                      enctype="multipart/form-data"
+                      id="form-tp"
+                      class="form-horizontal">
+
+                    {% for key,options in fields %}
+                        <div class="form-group {% if(options.required) %}required{% endif %}">
+                            <label class="col-sm-2 control-label" for="{{ key }}">
+                                {% if(options.description) %}
+                                    <span data-toggle="tooltip" title="{{ options.description }}">{{ options.label }}</span>
+                                {% else %}
+                                    {{ options.label }}
+                                {% endif %}
+                            </label>
+                            <div class="col-sm-10">
+                                {% if(options.type == 'text') %}
+                                    <input type="text"
+                                           name="{{ key }}"
+                                           value="{{ options.value }}"
+                                           placeholder="{{ options.label }}"
+                                           id="{{ key }}"
+                                           class="form-control" />
+                                    {% if(options.required) %}
+                                        {% set error_field = _context['error_' ~ options.fieldKey] %}
+                                        {% if (error_field) %}
+                                            <div class="text-danger">{{ error_field }}</div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                                {% if(options.type == 'select') %}
+                                    <select name="{{ key }}" id="{{ key }}" class="form-control">
+                                        {% if(options.option_default_name) %}
+                                            <option value="{{ options.option_default_value }}">{{ options.option_default_name }}</option>
+                                        {% endif %}
+                                        {% for option in options.options %}
+                                            {% if (option[options['option_value']] == options.value) %}
+                                                <option value="{{ option[options['option_value']] }}"
+                                                        selected="selected">{{ option[options['option_name']] }}</option>
+                                            {% else %}
+                                                <option value="{{ option[options['option_value']] }}">{{ option[options['option_name']] }}</option>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </select>
+
+                                    {% if(options.required) %}
+                                        {% set error_field = _context['error_' ~ options.fieldKey] %}
+                                        {% if (error_field) %}
+                                            <div class="text-danger">{{ error_field }}</div>
+                                        {% endif %}
+                                        {% if (error_order_status) %}
+                                            <div class="text-danger">{{ error_order_status }}</div>
+                                        {% endif %}
+                                    {% endif %}
+
+                                {% endif %}
+
+                                {% if(options.type == 'radio') %}
+                                    {% for option in options.options  %}
+                                        <label class="radio-inline">
+                                            <input type="radio"
+                                                    name="{{ key }}"
+                                                    value="{{ option[options['option_value']] }}"
+                                                    id="{{ option['selector_id']}}"
+                                                    {{ option[options['option_value']] == options.value ? 'checked=""' : ''}}
+                                            >{{ option[options['option_name']] }}
+                                        </label>
+                                    {% endfor %}
+                                {% endif %}
+
+                                {% if(options.type == 'checkbox') %}
+                                    {% for option in options.options %}
+                                        {% if ( option[options['option_value']] in options.value ) %}
+                                            <label class="lb-order-listen">
+                                                <input type="checkbox" name="{{ key }}[]" value="{{ option[options['option_value']] }}" checked>
+                                                {{ option[options['option_name']] }}
+                                            </label>
+                                        {% else %}
+                                            <label class="lb-order-listen">
+                                                <input type="checkbox" name="{{ key }}[]" value="{{ option[options['option_value']] }}">
+                                                {{ option[options['option_name']] }}
+                                            </label>
+                                        {% endif %}
+                                    {% endfor %}
+
+                                    {% if(options.required) %}
+                                        {% set error_field = _context['error_' ~ options.fieldKey] %}
+                                        {% if (error_field) %}
+                                            <div class="text-danger">{{ error_field }}</div>
+                                        {% endif %}
+                                        {% if (error_order_status) %}
+                                            <div class="text-danger">{{ error_order_status }}</div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{{ footer }}
