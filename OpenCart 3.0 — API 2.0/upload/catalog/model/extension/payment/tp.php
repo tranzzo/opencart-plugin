@@ -80,6 +80,7 @@ class ModelExtensionPaymentTp extends Model
     {
         $sql = "SELECT order_id FROM " . DB_PREFIX . "order WHERE tracking = '" . (int)$tranzo_id . "'";
         $query = $this->db->query($sql);
+
         return $query;
     }
 
@@ -92,6 +93,7 @@ class ModelExtensionPaymentTp extends Model
     {
         $sql = "SELECT name FROM " . DB_PREFIX . "order_status WHERE order_status_id = '" . (int)$id . "' AND language_id = '" . (int)$lang . "'";
         $query = $this->db->query($sql);
+
         return $query;
     }
 

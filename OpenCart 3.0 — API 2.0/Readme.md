@@ -89,3 +89,6 @@
 6. Скопіюйте ключ API та сіль з торгового порталу Tranzzo в розширення OpenCart у відповідні поля з такими ж назвами.
 7. Оберіть статуси для замовлень OpenCart згідно з транзакціями
 8. Заповніть всі обов'язкові поля.
+
+*Рекомендований пакет української мови для адмін панелі та сайту OpenCart
+[Ukrainian language Pack Opencart 3](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=31393&filter_category_id=2)

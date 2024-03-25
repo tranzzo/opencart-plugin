@@ -88,7 +88,7 @@ class ControllerExtensionPaymentTp extends Controller
         $this->model_checkout_order->addOrderHistory(
             $order_id,
             1,
-            'Pending',
+            'Init',
             true
         );
 
@@ -154,7 +154,8 @@ class ControllerExtensionPaymentTp extends Controller
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
                     $this->config->get('payment_tp_order_status_complete_id'),
-                    sprintf($this->language->get('text_pay_success'),$this->globalLabel, $amount_order) . "\n
+                    sprintf($this->language->get('order_no'), $order_id).
+                    sprintf($this->language->get('text_pay_success'),$this->globalLabel,$amount_order.$order_info['currency_code']) . "\n
                        {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}\n
                        {$this->language->get('text_order')}: {$data_response[ServiceApi::P_REQ_ORDER]}",
                     true
@@ -179,6 +180,14 @@ class ControllerExtensionPaymentTp extends Controller
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
                     $this->config->get('payment_tp_order_status_auth_id'),
+                    sprintf($this->language->get('text_pay_auth_custom'),$amount_order.$order_info['currency_code'], $this->globalLabel, $order_id). "'\n
+                       {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}",
+                    true
+                );
+
+                $this->model_checkout_order->addOrderHistory(
+                    $order_id,
+                    $this->config->get('payment_tp_order_status_auth_id'),
                     sprintf($this->language->get('text_pay_auth'), $this->globalLabel). "'\n
                        {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}\n
                        {$this->language->get('text_order')}: {$data_response[ServiceApi::P_REQ_ORDER]}",
@@ -189,6 +198,15 @@ class ControllerExtensionPaymentTp extends Controller
             }
             elseif ($data_response['method'] == 'refund' && $data_response['status'] == 'success') {
                 $this->ServiceApi->writeLog(array('5', 1));
+
+                $oldPaymentData = $this->model_extension_payment_tp->getPaymentData($order_id);
+                $oldMethod = null;
+
+                $oldMethod = ($oldPaymentData && !empty($oldPaymentData)) ? $oldPaymentData['method'] : null;
+
+                $setCurrentStatusForMethod = $oldMethod == 'auth' ?
+                    $this->config->get('payment_tp_custom_auth_refunded_status') :
+                    $setCurrentStatusForMethod = $this->config->get('payment_tp_order_status_listen');
 
                 $payment_data = [
                     'method' => 'refund',
@@ -203,7 +221,15 @@ class ControllerExtensionPaymentTp extends Controller
 
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
-                    $this->config->get('payment_tp_order_status_listen'),
+                    $setCurrentStatusForMethod,
+                    sprintf($this->language->get('text_pay_refund_custom'), $order_id, $amount_payment.$order_info['currency_code'], $this->globalLabel)."\n".
+                       $this->language->get('text_payment_id').": ".$data_response[ServiceApi::P_RES_PAYMENT_ID],
+                    true
+                );
+
+                $this->model_checkout_order->addOrderHistory(
+                    $order_id,
+                    $setCurrentStatusForMethod,
                     sprintf($this->language->get('text_pay_refund'), $this->globalLabel)."\n
                        {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}\n
                        {$this->language->get('text_order')}: {$data_response[ServiceApi::P_REQ_ORDER]}",
@@ -229,6 +255,14 @@ class ControllerExtensionPaymentTp extends Controller
 
                 $this->load->model('extension/payment/tp');
                 $this->model_extension_payment_tp->addPaymentData($order_id, $payment_data);
+
+                $this->model_checkout_order->addOrderHistory(
+                    $order_id,
+                    $this->config->get('payment_tp_custom_auth_voided_status'),
+                    sprintf($this->language->get('text_pay_void_custom'), $order_id, $payment_data['refund_amount'].$order_info['currency_code'], $this->globalLabel) ."\n
+                       {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}",
+                    true
+                );
 
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
@@ -265,6 +299,14 @@ class ControllerExtensionPaymentTp extends Controller
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
                     $this->config->get('payment_tp_custom_auth_success_status'),
+                    sprintf($this->language->get('text_pay_success_custom'), $order_id, $this->globalLabel, $amount_order.$order_info['currency_code']) . "\n
+                       {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}",
+                    true
+                );
+
+                $this->model_checkout_order->addOrderHistory(
+                    $order_id,
+                    $this->config->get('payment_tp_custom_auth_success_status'),
                     sprintf($this->language->get('text_pay_success'), $amount_order) . "\n
                        {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}\n
                        {$this->language->get('text_order')}: {$data_response[ServiceApi::P_REQ_ORDER]}",
@@ -274,21 +316,36 @@ class ControllerExtensionPaymentTp extends Controller
                 $this->model_extension_payment_tp->createTransaction($data_response[ServiceApi::P_REQ_METHOD], $amount_payment, $order_id);
             }
             elseif($data_response['status'] == 'pending'){
+                $setCurrentStatusForMethod = $data_response['method'] == 'auth' ?
+                    $this->config->get('payment_tp_custom_auth_pending_status') :
+                    $this->config->get('payment_tp_custom_pending_status');
+
                 $this->model_checkout_order->addOrderHistory(
                     $order_id,
-                    $this->config->get('payment_tp_custom_pending_status'),
-                    'pending',
+                    $setCurrentStatusForMethod,
+                    'Pending',
                     true
                 );
             }
             else {
-                $msg = !empty($data_response['response_code']) ? "Response code: {$data_response['response_code']} " : "";
-                $msg .= !empty($data_response['response_description']) ? "Description: {$data_response['response_description']}" : "";
-                $this->model_checkout_order->addOrderHistory(
-                    $order_id,
-                    $this->config->get('payment_tp_order_status_failure_id'),
-                    $msg
-                );
+                $msg = !empty($data_response['status_code']) ? "Status code: {$data_response['status_code']} " : "";
+                $msg .= !empty($data_response['status_description']) ? "Description: {$data_response['status_description']}" : "";
+
+                if($data_response['status'] == 'failure' && $data_response['method'] == 'auth') {
+                    $this->model_checkout_order->addOrderHistory(
+                        $order_id,
+                        $this->config->get('payment_tp_custom_auth_failed_status'),
+                        $msg
+                    );
+                }
+
+                if($data_response['status'] == 'failure' && $data_response['method'] != 'auth') {
+                    $this->model_checkout_order->addOrderHistory(
+                        $order_id,
+                        $this->config->get('payment_tp_order_status_failure_id'),
+                        $msg
+                    );
+                }
             }
         }
     }

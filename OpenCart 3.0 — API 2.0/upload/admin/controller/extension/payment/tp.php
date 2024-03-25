@@ -133,7 +133,7 @@ class ControllerExtensionPaymentTp extends Controller
         $this->fields['payment_tp_order_status_complete_id']['option_name'] = 'name';
         $this->fields['payment_tp_order_status_complete_id']['option_default_value'] = '';
         $this->fields['payment_tp_order_status_complete_id']['option_default_name'] = '---';
-        $this->fields['payment_tp_order_status_complete_id']['description'] = $this->language->get('tp_statuses_description');
+        //$this->fields['payment_tp_order_status_complete_id']['description'] = $this->language->get('tp_statuses_description');
         $this->fields['payment_tp_order_status_complete_id']['url'] = 'https://docs.tranzzo.com/uk/docs/transactions-purchase/overview/';
 
         $this->fields['payment_tp_order_status_auth_id']['options'] =
@@ -142,7 +142,7 @@ class ControllerExtensionPaymentTp extends Controller
         $this->fields['payment_tp_order_status_auth_id']['option_name'] = 'name';
         $this->fields['payment_tp_order_status_auth_id']['option_default_value'] = '';
         $this->fields['payment_tp_order_status_auth_id']['option_default_name'] = '---';
-        $this->fields['payment_tp_order_status_auth_id']['description'] = $this->language->get('tp_statuses_description');
+        //$this->fields['payment_tp_order_status_auth_id']['description'] = $this->language->get('tp_statuses_description');
         $this->fields['payment_tp_order_status_auth_id']['url'] = 'https://docs.tranzzo.com/uk/docs/transactions-2-step/auth/';
 
         $this->fields['payment_tp_order_status_failure_id']['options'] =
@@ -151,7 +151,7 @@ class ControllerExtensionPaymentTp extends Controller
         $this->fields['payment_tp_order_status_failure_id']['option_name'] = 'name';
         $this->fields['payment_tp_order_status_failure_id']['option_default_value'] = '';
         $this->fields['payment_tp_order_status_failure_id']['option_default_name'] = '---';
-        $this->fields['payment_tp_order_status_failure_id']['description'] = $this->language->get('tp_statuses_description');
+        //$this->fields['payment_tp_order_status_failure_id']['description'] = $this->language->get('tp_statuses_description');
         $this->fields['payment_tp_order_status_failure_id']['url'] = 'https://docs.tranzzo.com/uk/docs/status-codes/codes-by-stages/';
 
         $this->fields['payment_tp_order_status_listen']['options'] =
@@ -160,7 +160,7 @@ class ControllerExtensionPaymentTp extends Controller
         $this->fields['payment_tp_order_status_listen']['option_name'] = 'name';
         $this->fields['payment_tp_order_status_listen']['option_default_value'] = '';
         $this->fields['payment_tp_order_status_listen']['option_default_name'] = '---';
-        $this->fields['payment_tp_order_status_listen']['description'] = $this->language->get('tp_statuses_description');
+        //$this->fields['payment_tp_order_status_listen']['description'] = $this->language->get('tp_statuses_description');
         $this->fields['payment_tp_order_status_listen']['url'] = 'https://docs.tranzzo.com/uk/docs/transactions-refund/overview/';
 
         $this->fields['payment_tp_custom_pending_status']['options'] =
@@ -169,7 +169,7 @@ class ControllerExtensionPaymentTp extends Controller
         $this->fields['payment_tp_custom_pending_status']['option_name'] = 'name';
         $this->fields['payment_tp_custom_pending_status']['option_default_value'] = '';
         $this->fields['payment_tp_custom_pending_status']['option_default_name'] = '---';
-        $this->fields['payment_tp_custom_pending_status']['description'] = $this->language->get('tp_statuses_description');
+        //$this->fields['payment_tp_custom_pending_status']['description'] = $this->language->get('tp_statuses_description');
         $this->fields['payment_tp_custom_pending_status']['url'] = 'https://docs.tranzzo.com/uk/docs/status-codes/payment-cycle/';
 
         $this->fields['payment_tp_custom_auth_pending_status']['options'] =
@@ -178,7 +178,7 @@ class ControllerExtensionPaymentTp extends Controller
         $this->fields['payment_tp_custom_auth_pending_status']['option_name'] = 'name';
         $this->fields['payment_tp_custom_auth_pending_status']['option_default_value'] = '';
         $this->fields['payment_tp_custom_auth_pending_status']['option_default_name'] = '---';
-        $this->fields['payment_tp_custom_auth_pending_status']['description'] = $this->language->get('tp_statuses_description');
+        //$this->fields['payment_tp_custom_auth_pending_status']['description'] = $this->language->get('tp_statuses_description');
         $this->fields['payment_tp_custom_auth_pending_status']['url'] = 'https://docs.tranzzo.com/uk/docs/status-codes/payment-cycle/';
 
         $this->fields['payment_tp_custom_auth_failed_status']['options'] =
@@ -187,7 +187,7 @@ class ControllerExtensionPaymentTp extends Controller
         $this->fields['payment_tp_custom_auth_failed_status']['option_name'] = 'name';
         $this->fields['payment_tp_custom_auth_failed_status']['option_default_value'] = '';
         $this->fields['payment_tp_custom_auth_failed_status']['option_default_name'] = '---';
-        $this->fields['payment_tp_custom_auth_failed_status']['description'] = $this->language->get('tp_statuses_description');
+        //$this->fields['payment_tp_custom_auth_failed_status']['description'] = $this->language->get('tp_statuses_description');
         $this->fields['payment_tp_custom_auth_failed_status']['url'] = 'https://docs.tranzzo.com/uk/docs/status-codes/codes-by-stages/';
 
         $this->fields['payment_tp_custom_auth_part_success_status']['options'] =
@@ -196,7 +196,7 @@ class ControllerExtensionPaymentTp extends Controller
         $this->fields['payment_tp_custom_auth_part_success_status']['option_name'] = 'name';
         $this->fields['payment_tp_custom_auth_part_success_status']['option_default_value'] = '';
         $this->fields['payment_tp_custom_auth_part_success_status']['option_default_name'] = '---';
-        $this->fields['payment_tp_custom_auth_part_success_status']['description'] = $this->language->get('tp_statuses_description');
+        //$this->fields['payment_tp_custom_auth_part_success_status']['description'] = $this->language->get('tp_statuses_description');
         $this->fields['payment_tp_custom_auth_part_success_status']['url'] = 'https://docs.tranzzo.com/docs/transactions-2-step/capture/api/#capture-the-part-of-the-amount';
 
         $this->fields['payment_tp_custom_auth_success_status']['options'] =
@@ -205,7 +205,7 @@ class ControllerExtensionPaymentTp extends Controller
         $this->fields['payment_tp_custom_auth_success_status']['option_name'] = 'name';
         $this->fields['payment_tp_custom_auth_success_status']['option_default_value'] = '';
         $this->fields['payment_tp_custom_auth_success_status']['option_default_name'] = '---';
-        $this->fields['payment_tp_custom_auth_success_status']['description'] = $this->language->get('tp_statuses_description');
+        //$this->fields['payment_tp_custom_auth_success_status']['description'] = $this->language->get('tp_statuses_description');
         $this->fields['payment_tp_custom_auth_success_status']['url'] = 'https://docs.tranzzo.com/docs/transactions-2-step/capture/api/#capture-of-the-entire-amount';
 
         $this->fields['payment_tp_custom_auth_voided_status']['options'] =
@@ -214,7 +214,7 @@ class ControllerExtensionPaymentTp extends Controller
         $this->fields['payment_tp_custom_auth_voided_status']['option_name'] = 'name';
         $this->fields['payment_tp_custom_auth_voided_status']['option_default_value'] = '';
         $this->fields['payment_tp_custom_auth_voided_status']['option_default_name'] = '---';
-        $this->fields['payment_tp_custom_auth_voided_status']['description'] = $this->language->get('tp_statuses_description');
+        //$this->fields['payment_tp_custom_auth_voided_status']['description'] = $this->language->get('tp_statuses_description');
         $this->fields['payment_tp_custom_auth_voided_status']['url'] = 'https://docs.tranzzo.com/uk/docs/transactions-2-step/void/';
 
         $this->fields['payment_tp_custom_auth_refunded_status']['options'] =
@@ -223,7 +223,7 @@ class ControllerExtensionPaymentTp extends Controller
         $this->fields['payment_tp_custom_auth_refunded_status']['option_name'] = 'name';
         $this->fields['payment_tp_custom_auth_refunded_status']['option_default_value'] = '';
         $this->fields['payment_tp_custom_auth_refunded_status']['option_default_name'] = '---';
-        $this->fields['payment_tp_custom_auth_refunded_status']['description'] = $this->language->get('tp_statuses_description');
+        //$this->fields['payment_tp_custom_auth_refunded_status']['description'] = $this->language->get('tp_statuses_description');
         $this->fields['payment_tp_custom_auth_refunded_status']['url'] = 'https://docs.tranzzo.com/uk/docs/transactions-refund/overview/';
 
         $this->fields['payment_tp_type_payment']['options'] = array(
