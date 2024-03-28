@@ -6,6 +6,7 @@ $_['text_refresh'] = 'Оновити';
 $_['text_extension'] = 'Доповнення';
 $_['text_off'] = 'Вимкнути';
 $_['text_on'] = 'Увімкнути';
+$_['contact_text'] = 'Звʼязатися з підтримкою';
 $_['entry_pos_id'] = 'POS_ID';
 $_['entry_api_key'] = 'API_KEY';
 $_['entry_api_secret'] = 'API_SECRET';

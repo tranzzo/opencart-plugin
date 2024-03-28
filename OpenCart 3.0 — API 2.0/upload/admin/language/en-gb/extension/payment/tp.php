@@ -6,6 +6,7 @@ $_['text_refresh'] = 'Refresh';
 $_['text_extension'] = 'Extensions';
 $_['text_off'] = 'Disable';
 $_['text_on'] = 'Enable';
+$_['contact_text'] = 'Contact support';
 $_['entry_pos_id'] = 'POS_ID';
 $_['entry_api_key']  = 'API_KEY';
 $_['entry_api_secret']     = 'API_SECRET';
