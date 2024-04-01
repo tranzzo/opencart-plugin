@@ -16,6 +16,7 @@ class ControllerExtensionPaymentTp extends Controller
     public function index()
     {
         $isTestMode = $this->config->get('payment_tp_test_mode') != '0' ? 1 : 0;
+        $type_payment = ( $this->config->get('payment_tp_type_payment') == '1') ? 1 : 0;
 
         $this->load->language('extension/payment/tp');
         $data = $this->language->all();
@@ -91,6 +92,15 @@ class ControllerExtensionPaymentTp extends Controller
             'Init',
             true
         );
+
+        $payment_data = [
+            'method' => $type_payment == 1 ? 'auth' : 'purchase',
+            'amount_order' => $params[ServiceApi::P_REQ_AMOUNT],
+            'order_id' => $order_id,
+            'is_test' => $isTestMode ? 'XTS' : $order_info['currency_code']
+        ];
+
+        $this->model_extension_payment_tp->addPaymentData($order_id, $payment_data);
 
         $this->cart->clear();
 
@@ -208,7 +218,8 @@ class ControllerExtensionPaymentTp extends Controller
                     $oldPaymentData = json_decode($oldPaymentData, true);
                 }
 
-                $oldMethod = ($oldPaymentData && !empty($oldPaymentData)) ? $oldPaymentData['method'] : null;
+                //$oldMethod = ($oldPaymentData && !empty($oldPaymentData)) ? $oldPaymentData['method'] : null;
+                $oldMethod = $this->model_extension_payment_tp->getFirstTransactionType($order_id);
 
                 $setCurrentStatusForMethod = $oldMethod == 'auth' ?
                     $this->config->get('payment_tp_custom_auth_refunded_status') :

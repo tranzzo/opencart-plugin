@@ -251,4 +251,18 @@ class ModelExtensionPaymentTp extends Model
 
         return (float)$query->row['total'];
     }
+
+    /**
+     * @param $order_id
+     * @return |null
+     */
+    public function getFirstTransactionType($order_id) {
+        $query = $this->db->query("SELECT type FROM " . $this->table_name . " WHERE order_id = '" . (int)$order_id . "' ORDER BY id ASC LIMIT 1");
+
+        if ($query->num_rows) {
+            return $query->row['type'];
+        } else {
+            return null;
+        }
+    }
 }

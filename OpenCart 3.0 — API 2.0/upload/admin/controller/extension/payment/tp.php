@@ -20,10 +20,12 @@ class ControllerExtensionPaymentTp extends Controller
         'payment_tp_test_mode' => array('required' => false, 'type' => 'radio'),
         'payment_tp_type_payment' => array('required' => false, 'type' => 'radio'),
         'payment_tp_total' => array('required' => false, 'type' => 'text'),
+        'payment_tp_one_title' => array('required' => false, 'type' => 'title'),
         'payment_tp_custom_pending_status' => array('required' => true, 'type' => 'select'),
         'payment_tp_order_status_complete_id' => array('required' => true, 'type' => 'select'),
         'payment_tp_order_status_failure_id' => array('required' => true, 'type' => 'select'),
         'payment_tp_order_status_listen' => array('required' => true, 'type' => 'select'),
+        'payment_tp_two_title' => array('required' => false, 'type' => 'title'),
         'payment_tp_custom_auth_pending_status' => array('required' => true, 'type' => 'select'),
         'payment_tp_order_status_auth_id' => array('required' => true, 'type' => 'select'),
         'payment_tp_custom_auth_failed_status' => array('required' => true, 'type' => 'select'),
@@ -106,6 +108,8 @@ class ControllerExtensionPaymentTp extends Controller
         $data['user_token'] = $this->session->data['user_token'];
 
         $data['contact_text'] = $this->language->get('contact_text');
+        $data['tp_url_doc'] = $this->language->get('tp_url_doc');
+        $data['tp_text_doc'] = $this->language->get('tp_text_doc');
 
         $this->response->setOutput($this->load->view('extension/payment/tp', $data));
 
@@ -277,6 +281,11 @@ class ControllerExtensionPaymentTp extends Controller
         $this->fields['payment_tp_type_payment']['option_value'] = 'id';
         $this->fields['payment_tp_type_payment']['option_name'] = 'name';
 
+        $url = $currentLanguage == 'en' ?
+            'https://docs.tranzzo.com/docs/transactions-2-step/auth/' :
+            'https://docs.tranzzo.com/uk/docs/transactions-2-step/auth/';
+        $this->fields['payment_tp_type_payment']['url'] = $url;
+
         $this->fields['payment_tp_test_mode']['options'] = array(
             array(
                 'id' => 1,
@@ -306,6 +315,9 @@ class ControllerExtensionPaymentTp extends Controller
         );
         $this->fields['payment_tp_status']['option_value'] = 'id';
         $this->fields['payment_tp_status']['option_name'] = 'name';
+
+        $this->fields['payment_tp_one_title']['description'] = $this->language->get('payment_tp_one_title');
+        $this->fields['payment_tp_two_title']['description'] = $this->language->get('payment_tp_two_title');
 
         $requestPost = $this->request->post;
 

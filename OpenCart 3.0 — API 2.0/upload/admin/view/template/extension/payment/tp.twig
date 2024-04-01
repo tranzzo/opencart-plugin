@@ -23,6 +23,7 @@
         </div>
     </div>
     <div class="container-fluid">
+        <p><a href="{{ tp_url_doc }}">{{ tp_text_doc }}</a></p>
         <p><a class="btn btn-primary" href="mailto:support@tranzzo.com">{{ contact_text }}</a></p>
         {% if (error_warning) %}
         <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
@@ -47,13 +48,17 @@
 
                     {% for key,options in fields %}
                         <div class="form-group {% if(options.required) %}required{% endif %}">
-                            <label class="col-sm-2 control-label" for="{{ key }}">
-                                {% if(options.description) %}
-                                    <span data-toggle="tooltip" title="{{ options.description }}">{{ options.label }}</span>
-                                {% else %}
-                                    {{ options.label }}
-                                {% endif %}
-                            </label>
+                            {% if(options.type == 'title') %}
+                                <h3 class="text-center">{{ options.description }}</h3>
+                            {% else %}
+                                <label class="col-sm-2 control-label" for="{{ key }}">
+                                    {% if(options.description) %}
+                                        <span data-toggle="tooltip" title="{{ options.description }}">{{ options.label }}</span>
+                                    {% else %}
+                                        {{ options.label }}
+                                    {% endif %}
+                                </label>
+                            {% endif %}
                             <div class="col-sm-10">
                                 {% if(options.type == 'text') %}
                                     <input type="text"
