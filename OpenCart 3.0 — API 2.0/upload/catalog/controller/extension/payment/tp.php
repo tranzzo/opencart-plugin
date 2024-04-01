@@ -100,6 +100,7 @@ class ControllerExtensionPaymentTp extends Controller
             'is_test' => $isTestMode ? 'XTS' : $order_info['currency_code']
         ];
 
+        $this->load->model('extension/payment/tp');
         $this->model_extension_payment_tp->addPaymentData($order_id, $payment_data);
 
         $this->cart->clear();
@@ -316,13 +317,23 @@ class ControllerExtensionPaymentTp extends Controller
                 $this->load->model('extension/payment/tp');
                 $this->model_extension_payment_tp->addPaymentData($order_id, $payment_data);
 
-                $this->model_checkout_order->addOrderHistory(
-                    $order_id,
-                    $this->config->get('payment_tp_custom_auth_success_status'),
-                    sprintf($this->language->get('text_pay_success_custom'), $order_id, $this->globalLabel, $amount_order.$order_info['currency_code']) . "\n
+                if($this->model_extension_payment_tp->getTotalHoldAmount($order_id) > $payment_data['amount_payment']){
+                    $this->model_checkout_order->addOrderHistory(
+                        $order_id,
+                        $this->config->get('payment_tp_custom_auth_part_success_status'),
+                        sprintf($this->language->get('text_pay_success_custom'), $order_id, $this->globalLabel, $payment_data['amount_payment'].$order_info['currency_code']) . "\n
                        {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}",
-                    true
-                );
+                        true
+                    );
+                }else{
+                    $this->model_checkout_order->addOrderHistory(
+                        $order_id,
+                        $this->config->get('payment_tp_custom_auth_success_status'),
+                        sprintf($this->language->get('text_pay_success_custom'), $order_id, $this->globalLabel, $payment_data['amount_payment'].$order_info['currency_code']) . "\n
+                       {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}",
+                        true
+                    );
+                }
 
                 /*$this->model_checkout_order->addOrderHistory(
                     $order_id,
