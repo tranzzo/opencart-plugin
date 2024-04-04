@@ -3,15 +3,15 @@
 ## Installing
 
 == Method 1: ==
-1. Download the latest released packaged from [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%203.0%20%E2%80%94%20API%202.0) with extension as .ocmod.zip
+1. Download the latest released packaged from [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%204.0%20%E2%80%94%20API%202.0) with extension as .ocmod.zip
 2. Log in to admin
 3. Navigate to Extensions => Installer
 4. Browser your package and click upload button.
 
 == Method 2: ==
-1. Download the latest released packaged from [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%203.0%20%E2%80%94%20API%202.0)
+1. Download the latest released packaged from [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%204.0%20%E2%80%94%20API%202.0)
 2. Unzip the package.
-3. And upload the files of 'upload' folder to under path/to/project/ folder via FTP.
+3. And upload the files and 'oc_payment_tp' folder to under path/to/project/extension folder via FTP.
 4. This package not overwriting any core files.
 
 == Install ==
@@ -23,15 +23,15 @@
 
 ## Upgradation
 == Method 1: ==
-1. Download the latest released packaged from [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%203.0%20%E2%80%94%20API%202.0) with extension as .ocmod.zip
+1. Download the latest released packaged from [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%204.0%20%E2%80%94%20API%202.0) with extension as .ocmod.zip
 2. Log in to admin
 3. Navigate to Extensions => Installer
 4. Browser your package and click upload button. This would overwrite/replace the old extension files.
 
 == Method 2: ==
-1. Download the latest released packaged from [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%203.0%20%E2%80%94%20API%202.0)
+1. Download the latest released packaged from [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%204.0%20%E2%80%94%20API%202.0)
 2. Unzip the package.
-3. And upload the files of 'upload' folder to under path/to/project/ folder via FTP.
+3. And upload the files and 'oc_payment_tp' folder to under path/to/project/extension folder via FTP.
 4. This would overwrite/replace the old extension files.
 
 ## Configuration
@@ -49,15 +49,15 @@
 ## Встановлення
 
 == Метод 1: ==
-1. Завантажте останню випущену версію з [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%203.0%20%E2%80%94%20API%202.0) у форматі .ocmod.zip
+1. Завантажте останню випущену версію з [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%204.0%20%E2%80%94%20API%202.0) у форматі .ocmod.zip
 2. Увійдіть в адмін-панель
 3. Перейдіть в Розширення => Інсталятор
 4. Виберіть ваш файл та натисніть кнопку завантаження.
 
 == Метод 2: ==
-1. Завантажте останню випущену версію з [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%203.0%20%E2%80%94%20API%202.0)
+1. Завантажте останню випущену версію з [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%204.0%20%E2%80%94%20API%202.0)
 2. Розпакуйте архів.
-3. Та завантажте файли з папки 'upload' в папку path/to/project/ через FTP.
+3. Та завантажте файли з папкою 'oc_payment_tp' в папку path/to/project/extension через FTP.
 4. Цей пакет не переписує жодних основних файлів.
 
 == Встановлення ==
@@ -69,15 +69,15 @@
 
 ## Оновлення
 == Метод 1: ==
-1. Завантажте останню випущену версію з [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%203.0%20%E2%80%94%20API%202.0) у форматі .ocmod.zip
+1. Завантажте останню випущену версію з [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%204.0%20%E2%80%94%20API%202.0) у форматі .ocmod.zip
 2. Увійдіть в адмін-панель
 3. Перейдіть в Розширення => Інсталятор
 4. Виберіть ваш файл та натисніть кнопку завантаження. Це перезапише/замінить старі файли розширення.
 
 == Метод 2: ==
-1. Завантажте останню випущену версію з [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%203.0%20%E2%80%94%20API%202.0)
+1. Завантажте останню випущену версію з [GitHub](https://github.com/tranzzo/opencart-plugin/tree/master/OpenCart%204.0%20%E2%80%94%20API%202.0)
 2. Розпакуйте архів.
-3. Та завантажте файли з папки 'upload' в папку path/to/project/ через FTP.
+3. Та завантажте файли з папкою 'oc_payment_tp' в папку path/to/project/extension через FTP.
 4. Це перезапише/замінить старі файли розширення.
 
 ## Налаштування
@@ -89,6 +89,3 @@
 6. Скопіюйте ключ API та сіль з торгового порталу Tranzzo в розширення OpenCart у відповідні поля з такими ж назвами.
 7. Оберіть статуси для замовлень OpenCart згідно з транзакціями
 8. Заповніть всі обов'язкові поля.
-
-*Рекомендований пакет української мови для адмін панелі та сайту OpenCart
-[Ukrainian language Pack Opencart 3](https://www.opencart.com/index.php?route=marketplace/extension/info&extension_id=31393&filter_category_id=2)
