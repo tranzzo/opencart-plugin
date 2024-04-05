@@ -223,7 +223,7 @@ class TP extends \Opencart\System\Engine\Controller
                 $this->model_checkout_order->addHistory(
                     $order_id,
                     $this->config->get('payment_tp_order_status_auth_id'),
-                    sprintf($this->language->get('text_pay_auth_custom'),$amount_payment.$order_info['currency_code'], $this->globalLabel, $order_id). "\n
+                    sprintf($this->language->get('text_pay_auth_custom'),$amount_payment.$order_info['currency_code'], $order_id, $this->globalLabel). "\n
                        {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}",
                     true
                 );
