@@ -114,7 +114,7 @@ class TP extends \Opencart\System\Engine\Controller
             'method' => $type_payment == 1 ? 'auth' : 'purchase',
             'amount_order' => $params[ServiceApi::P_REQ_AMOUNT],
             'order_id' => $order_id,
-            'is_test' => $isTestMode ? 'XTS' : $order_info['currency_code']
+            'is_test' => $isTestMode ? true : false
         ];
 
         $this->load->model('extension/oc_payment_tp/payment/tp');
