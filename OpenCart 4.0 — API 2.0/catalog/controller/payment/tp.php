@@ -198,8 +198,7 @@ class TP extends \Opencart\System\Engine\Controller
                     $this->config->get('payment_tp_order_status_complete_id'),
                     sprintf($this->language->get('order_no'), $order_id).
                     sprintf($this->language->get('text_pay_success'),$this->globalLabel,$amount_order.$order_info['currency_code']) . "\n
-                       {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}\n
-                       {$this->language->get('text_order')}: {$data_response[ServiceApi::P_REQ_ORDER]}",
+                       {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}",
                     true
                 );
 
