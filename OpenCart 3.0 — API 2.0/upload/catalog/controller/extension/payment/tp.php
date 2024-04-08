@@ -97,7 +97,7 @@ class ControllerExtensionPaymentTp extends Controller
             'method' => $type_payment == 1 ? 'auth' : 'purchase',
             'amount_order' => $params[ServiceApi::P_REQ_AMOUNT],
             'order_id' => $order_id,
-            'is_test' => $isTestMode ? 'XTS' : $order_info['currency_code']
+            'is_test' => $isTestMode ? true : false
         ];
 
         $this->load->model('extension/payment/tp');
@@ -168,8 +168,7 @@ class ControllerExtensionPaymentTp extends Controller
                     $this->config->get('payment_tp_order_status_complete_id'),
                     sprintf($this->language->get('order_no'), $order_id).
                     sprintf($this->language->get('text_pay_success'),$this->globalLabel,$amount_order.$order_info['currency_code']) . "\n
-                       {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}\n
-                       {$this->language->get('text_order')}: {$data_response[ServiceApi::P_REQ_ORDER]}",
+                       {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}",
                     true
                 );
 
@@ -197,15 +196,6 @@ class ControllerExtensionPaymentTp extends Controller
                        {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}",
                     true
                 );
-
-                /*$this->model_checkout_order->addOrderHistory(
-                    $order_id,
-                    $this->config->get('payment_tp_order_status_auth_id'),
-                    sprintf($this->language->get('text_pay_auth'), $this->globalLabel). "'\n
-                       {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}\n
-                       {$this->language->get('text_order')}: {$data_response[ServiceApi::P_REQ_ORDER]}",
-                    true
-                );*/
 
                 $this->model_extension_payment_tp->createTransaction($data_response[ServiceApi::P_REQ_METHOD], $amount_payment, $order_id);
             }
@@ -246,15 +236,6 @@ class ControllerExtensionPaymentTp extends Controller
                     true
                 );
 
-                /*$this->model_checkout_order->addOrderHistory(
-                    $order_id,
-                    $setCurrentStatusForMethod,
-                    sprintf($this->language->get('text_pay_refund'), $this->globalLabel)."\n
-                       {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}\n
-                       {$this->language->get('text_order')}: {$data_response[ServiceApi::P_REQ_ORDER]}",
-                    true
-                );*/
-
                 $this->model_extension_payment_tp->createTransaction($data_response[ServiceApi::P_REQ_METHOD], $amount_payment, $order_id);
             }
             elseif ($data_response['method'] == 'void' && $data_response['status'] == 'success') {
@@ -283,15 +264,6 @@ class ControllerExtensionPaymentTp extends Controller
                        {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}",
                     true
                 );
-
-               /* $this->model_checkout_order->addOrderHistory(
-                    $order_id,
-                    $this->config->get('payment_tp_custom_auth_voided_status'),
-                    sprintf($this->language->get('text_pay_void'), $this->globalLabel) ."\n
-                       {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}\n
-                       {$this->language->get('text_order')}: {$data_response[ServiceApi::P_REQ_ORDER]}",
-                    true
-                );*/
 
                 $this->model_extension_payment_tp->createTransaction($data_response[ServiceApi::P_REQ_METHOD], $amount_payment, $order_id);
             }
@@ -334,15 +306,6 @@ class ControllerExtensionPaymentTp extends Controller
                         true
                     );
                 }
-
-                /*$this->model_checkout_order->addOrderHistory(
-                    $order_id,
-                    $this->config->get('payment_tp_custom_auth_success_status'),
-                    sprintf($this->language->get('text_pay_success'), $amount_order) . "\n
-                       {$this->language->get('text_payment_id')}: {$data_response[ServiceApi::P_RES_PAYMENT_ID]}\n
-                       {$this->language->get('text_order')}: {$data_response[ServiceApi::P_REQ_ORDER]}",
-                    true
-                );*/
 
                 $this->model_extension_payment_tp->createTransaction($data_response[ServiceApi::P_REQ_METHOD], $amount_payment, $order_id);
             }
