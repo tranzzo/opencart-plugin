@@ -18,13 +18,13 @@ class TP extends \Opencart\System\Engine\Controller
      * @var array[]
      */
     private $fields = array(
-        'payment_tp_pos_id' => array('required' => true, 'type' => 'text'),
-        'payment_tp_api_secret' => array('required' => true, 'type' => 'text'),
-        'payment_tp_api_key' => array('required' => true, 'type' => 'text'),
-        'payment_tp_endpoints_key' => array('required' => true, 'type' => 'text'),
+        'payment_tp_pos_id' => array('required' => true, 'type' => 'text', 'display' => 'text'),
+        'payment_tp_api_secret' => array('required' => true, 'type' => 'text', 'display' => 'password'),
+        'payment_tp_api_key' => array('required' => true, 'type' => 'text', 'display' => 'password'),
+        'payment_tp_endpoints_key' => array('required' => true, 'type' => 'text', 'display' => 'password'),
         'payment_tp_test_mode' => array('required' => true, 'type' => 'radio'),
         'payment_tp_type_payment' => array('required' => true, 'type' => 'radio'),
-        'payment_tp_total' => array('required' => false, 'type' => 'text'),
+        'payment_tp_total' => array('required' => false, 'type' => 'text', 'display' => 'text'),
         'payment_tp_one_title' => array('required' => false, 'type' => 'title'),
         'payment_tp_custom_pending_status' => array('required' => true, 'type' => 'select'),
         'payment_tp_order_status_complete_id' => array('required' => true, 'type' => 'select'),
@@ -38,7 +38,7 @@ class TP extends \Opencart\System\Engine\Controller
         'payment_tp_custom_auth_success_status' => array('required' => true, 'type' => 'select'),
         'payment_tp_custom_auth_voided_status' => array('required' => true, 'type' => 'select'),
         'payment_tp_custom_auth_refunded_status' => array('required' => true, 'type' => 'select'),
-        'payment_tp_sort_order' => array('required' => false, 'type' => 'text'),
+        'payment_tp_sort_order' => array('required' => false, 'type' => 'text', 'display' => 'text'),
         'payment_tp_geo_zone_id' => array('required' => false, 'type' => 'select'),
         'payment_tp_status' => array('required' => false, 'type' => 'select'),
     );

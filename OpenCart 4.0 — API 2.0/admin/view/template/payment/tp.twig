@@ -62,7 +62,7 @@
                             {% endif %}
                             <div class="col-sm-10">
                                 {% if(options.type == 'text') %}
-                                    <input type="text"
+                                    <input {% if(options.display == 'password') %}type="password"{% else %} type="text"{% endif %}
                                            name="{{ key }}"
                                            value="{{ options.value }}"
                                            placeholder="{{ options.label }}"
