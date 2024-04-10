@@ -358,19 +358,12 @@ class ControllerExtensionPaymentTp extends Controller
         }
 
         foreach ($this->fields as $key => $options){
-            if($options['required'] && !$this->request->post[$key]){
-                $fieldKey = str_replace('payment_tp_', '',$key);
+            if(($options['required'] && !isset($this->request->post[$key])) ||
+                ($options['required'] && $this->request->post[$key] === '')){
+                $fieldKey = str_replace('payment_tp_', '', $key);
                 $this->error[$fieldKey] = $this->language->get('error_'.$fieldKey);
             }
         }
-
-        $complete = (int)$this->request->post['payment_tp_order_status_complete_id'];
-        $auth = (int)$this->request->post['payment_tp_order_status_auth_id'];
-        $fail = (int)$this->request->post['payment_tp_order_status_failure_id'];
-
-        /*if ($complete == $fail || $complete == $auth || $auth == $fail) {
-            $this->error['order_status'] = $this->language->get('error_order_status');
-        }*/
 
         return !$this->error;
     }
