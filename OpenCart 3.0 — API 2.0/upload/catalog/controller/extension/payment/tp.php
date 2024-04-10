@@ -34,7 +34,7 @@ class ControllerExtensionPaymentTp extends Controller
         $params[ServiceApi::P_REQ_SERVER_URL] = $this->url->link('extension/payment/tp/callback', '', true);
         $params[ServiceApi::P_REQ_RESULT_URL] = $this->url->link('account/order/info&order_id=' . $order_id, '', true);
         $params[ServiceApi::P_REQ_ORDER] = strval($order_id);
-        $params[ServiceApi::P_REQ_AMOUNT] = $isTestMode ? ServiceApi::amountToDouble(2) : ServiceApi::amountToDouble($amount);
+        $params[ServiceApi::P_REQ_AMOUNT] = /*$isTestMode ? ServiceApi::amountToDouble(2) : */ServiceApi::amountToDouble($amount);
         $params[ServiceApi::P_REQ_CURRENCY] = $isTestMode ? 'XTS' : $order_info['currency_code'];
         $params[ServiceApi::P_REQ_DESCRIPTION] = "Order #{$order_id}";
 
