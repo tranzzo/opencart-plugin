@@ -97,7 +97,16 @@ class TP extends \Opencart\System\Engine\Controller
 
         $data['action'] = $this->url->link('checkout/checkout', '', true);
         $data['error'] = !empty($response['message']) ? $response['message'] : '';
-        $data['error'] .= (!empty($response['args']) && is_array($response['args'])) ? ', args: ' . urldecode(http_build_query($response['args'],'',', ')) : '';
+        $data['error'] .= (!empty($response['args']) && is_array($response['args'])) ? ', args: ' .self::formatApiMessageHtml($response['args']): '';
+
+        if(!empty($data['error'])){
+            $this->model_checkout_order->addHistory(
+                $order_id,
+                1,
+                $data['error'],
+                true
+            );
+        }
 
         if (!empty($response['redirect_url'])) {
             $data['redirect_url'] = $response['redirect_url'];
@@ -372,5 +381,44 @@ class TP extends \Opencart\System\Engine\Controller
                 }
             }
         }
+    }
+
+    public static function formatApiMessageHtml($data){
+        if (is_string($data)) {
+            return '<li>' . htmlspecialchars($data) . '</li>';
+        }
+
+        if (is_array($data)) {
+            $lines = [];
+
+            foreach ($data as $key => $value) {
+                if (is_array($value) && isset($value['field_name'], $value['violation'])) {
+                    $lines[] = '<li><strong>' . htmlspecialchars($value['field_name']) . ':</strong> ' . htmlspecialchars($value['violation']) . '</li>';
+                    continue;
+                }
+
+                if (is_array($value) && isset($value['msg']) && is_array($value['msg'])) {
+                    foreach ($value['msg'] as $msg) {
+                        $lines[] = '<li>' . htmlspecialchars($msg) . '</li>';
+                    }
+                    continue;
+                }
+
+                $prefix = is_string($key) ? '<strong>' . htmlspecialchars($key) . ':</strong> ' : '';
+
+                $nested = self::formatApiMessageHtml($value);
+                if ($nested !== '') {
+                    if (strpos($nested, '<li>') === 0) {
+                        $lines[] = '<li>' . $prefix . strip_tags($nested, '<strong><li>') . '</li>';
+                    } else {
+                        $lines[] = $nested;
+                    }
+                }
+            }
+
+            return !empty($lines) ? '<ul>' . implode('', $lines) . '</ul>' : '';
+        }
+
+        return '';
     }
 }

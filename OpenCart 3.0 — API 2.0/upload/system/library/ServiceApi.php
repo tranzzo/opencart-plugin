@@ -235,6 +235,11 @@ final class ServiceApi
     private $headers;
 
     /**
+     * @var null
+     */
+    private $registry;
+
+    /**
      * ServiceApi constructor.
      * @param null $registry
      */
